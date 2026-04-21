@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cat Demo v2</title>
+  <script type="module" src="/src/main.js"></script>
+  <script type="module" src="/src/cat-demo-v2.js"></script>
+</head>
+<body class="cat-page-v2">
+  <nav>
+    <a href="./">Home</a>
+    <a href="./about.html">About</a>
+    <a href="./projects.html">Projects</a>
+    <a href="./pretext-demo.html">Pretext Demo</a>
+    <a href="./pretext-demo-v2.html">Pretext Demo v2</a>
+    <a href="./cat-demo.html">Cat Demo</a>
+    <a href="./cat-demo-v2.html">Cat Demo v2</a>
+    <a href="./artemis.html">Artemis II</a>
+    <a href="./skin-color.html">Skin Color</a>
+    <a href="./scroll-demo.html">Scroll Demo</a>
+  </nav>
+  <header class="cv2-header">
+    <h1>Cat Demo v2</h1>
+    <p>Text wraps around the cat's actual silhouette as it walks across the full window.</p>
+    <div class="cv2-controls">
+      <label for="cat-speed-slider">Speed:</label>
+      <input id="cat-speed-slider" type="range" min="20" max="600" value="150" step="10" />
+      <span id="cat-speed-label">150 px/s</span>
+    </div>
+  </header>
+  <div id="cat-demo-v2"></div>
+</body>
+</html>

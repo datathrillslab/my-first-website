@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Scroll Demo</title>
+  <script type="module" src="/src/main.js"></script>
+  <script type="module" src="/src/scroll-demo.js"></script>
+</head>
+<body class="scroll-demo-page">
+  <nav>
+    <a href="./">Home</a>
+    <a href="./about.html">About</a>
+    <a href="./projects.html">Projects</a>
+    <a href="./pretext-demo.html">Pretext Demo</a>
+    <a href="./pretext-demo-v2.html">Pretext Demo v2</a>
+    <a href="./cat-demo.html">Cat Demo</a>
+    <a href="./cat-demo-v2.html">Cat Demo v2</a>
+    <a href="./artemis.html">Artemis II</a>
+    <a href="./skin-color.html">Skin Color</a>
+    <a href="./scroll-demo.html">Scroll Demo</a>
+  </nav>
+  <main>
+    <h1>Scrollytelling Demo</h1>
+    <p>Scroll down to meet the Artemis crew and their ride to the Moon.</p>
+    <section id="scroll">
+      <div class="scroll__text">
+        <div class="step" data-step="0">
+          <p>Meet Commander Dave — the fearless astronaut who insists on bringing his lucky socks to every mission. He's trained for years, run thousands of simulations, and yet his biggest concern right now? Whether the onboard espresso machine actually works in zero gravity. One small sip for man, one giant latte for mankind.</p>
+        </div>
+        <div class="step" data-step="1">
+          <p>Say hello to Mission Specialist Sara — pilot, engineer, and the only person on the crew who can parallel-park the lunar lander on the first try. She once fixed a life-support system with a paperclip and sheer determination. Houston doesn't have problems when Sara's on the line.</p>
+        </div>
+        <div class="step" data-step="2">
+          <p>And here's their ride — a magnificent rocket that turns millions of pounds of fuel into pure, window-rattling thunder. It stands taller than a 30-story building and goes from zero to "see you later, Earth" in about eight minutes. Buckle up, it's going to be a loud one.</p>
+        </div>
+      </div>
+      <div class="scroll__graphic">
+        <img class="scroll-svg" data-index="0" src="/artemis/m_astro.svg" alt="Male astronaut" />
+        <img class="scroll-svg" data-index="1" src="/artemis/f_astro.svg" alt="Female astronaut" />
+        <img class="scroll-svg" data-index="2" src="/artemis/rocket_astro.svg" alt="Rocket" />
+      </div>
+    </section>
+  </main>
+</body>
+</html>
