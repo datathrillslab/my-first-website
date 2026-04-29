@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scrollytelling Demo</title>
+<style>
+  :root {
+    --bg: #0d0d0d;
+    --ground: #2a2a2a;
+    --pile: #1c1c1c;
+    --truck-body: #242424;
+    --wheels: #555;
+    --crane: #c0c0c0;
+    --object: #e0c080;
+    --text: #b0b0b0;
+    --heading: #e8e8e8;
+    --instruction: #666;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body { background: var(--bg); }
+
+  /* --- Scrollytelling scene --- */
+  .scene-wrapper {
+    height: 500vh;
+    position: relative;
+  }
+
+  .scene-sticky {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg);
+  }
+
+  .scene {
+    position: relative;
+    width: 90vw;
+    max-width: 900px;
+    aspect-ratio: 800 / 500;
+    overflow: visible;
+  }
+
+  .scene svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    pointer-events: none;
+  }
+
+  .ground {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 0;
+    border-bottom: 2px solid var(--ground);
+  }
+
+  .instruction {
+    position: absolute;
+    top: -36px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: system-ui, -apple-system, sans-serif;
+    font-size: 13px;
+    color: var(--instruction);
+    letter-spacing: 0.04em;
+    pointer-events: none;
+  }
+
+  .svg-pile polygon { fill: var(--pile); }
+
+  .svg-truck .truck-body { fill: var(--truck-body); }
+  .svg-truck .truck-wheel { fill: var(--wheels); }
+
+  .svg-crane .crane-arm { fill: var(--crane); }
+  .svg-crane .crane-hub { fill: var(--crane); }
+  .svg-crane .crane-jaw {
+    fill: none;
+    stroke: var(--crane);
+    stroke-width: 5;
+    stroke-linecap: round;
+  }
+
+  .svg-object circle { fill: var(--object); }
+
+  /* --- Article --- */
+  .article {
+    max-width: 65ch;
+    margin: 0 auto;
+    padding: 80px 24px;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 18px;
+    line-height: 1.7;
+    color: var(--text);
+  }
+
+  .article p { margin-bottom: 1.5em; }
+
+  .article h2 {
+    font-family: system-ui, sans-serif;
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 0.6em;
+    color: var(--heading);
+  }
+
+  /* --- Paint section --- */
+  .paint-section {
+    padding: 100px 24px 120px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: var(--bg);
+    opacity: 0;
+    transition: opacity 0.8s ease;
+    pointer-events: none;
+  }
+
+  .paint-section.visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .paint-stage {
+    width: 100%;
+    max-width: 420px;
+    position: relative;
+  }
+
+  .paint-svg {
+    width: 100%;
+    height: auto;
+    overflow: visible;
+    display: block;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .bulb-hit {
+    cursor: grab;
+  }
+
+  .bulb-hit:active, .bulb-hit.dragging {
+    cursor: grabbing;
+  }
+
+  /* Only bulb receives pointer events */
+  #pipette .pipette-body {
+    pointer-events: none;
+  }
+
+  .drop {
+    pointer-events: none;
+  }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+</head>
+<body>
+
+<!-- ===== SCROLLYTELLING SCENE ===== -->
+<div class="scene-wrapper" id="sceneWrapper">
+  <div class="scene-sticky">
+    <div class="scene" id="scene">
+      <span class="instruction">scroll</span>
+      <div class="ground"></div>
+
+      <svg class="scene-svg svg-pile" viewBox="0 0 800 500" preserveAspectRatio="xMidYMax meet">
+        <polygon points="130,450 270,450 200,340"/>
+      </svg>
+
+      <svg class="scene-svg svg-truck" viewBox="0 0 800 500" preserveAspectRatio="xMidYMax meet">
+        <rect class="truck-body" x="490" y="380" width="60" height="70"/>
+        <rect class="truck-body" x="550" y="350" width="190" height="100"/>
+        <circle class="truck-wheel" cx="520" cy="450" r="15"/>
+        <circle class="truck-wheel" cx="580" cy="450" r="15"/>
+        <circle class="truck-wheel" cx="700" cy="450" r="15"/>
+      </svg>
+
+      <svg class="scene-svg svg-crane" viewBox="0 0 800 500" preserveAspectRatio="xMidYMax meet">
+        <g id="crane">
+          <polygon class="crane-arm" points="190,0 210,0 206,260 194,260"/>
+          <circle class="crane-hub" cx="200" cy="260" r="9"/>
+          <path id="jawLeft" class="crane-jaw"/>
+          <path id="jawRight" class="crane-jaw"/>
+        </g>
+      </svg>
+
+      <svg class="scene-svg svg-object" viewBox="0 0 800 500" preserveAspectRatio="xMidYMax meet">
+        <circle id="object" cx="200" cy="374" r="26"/>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ARTICLE ===== -->
+<article class="article">
+  <h2>Lorem ipsum dolor</h2>
+  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+  <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+  <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+  <p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet.</p>
+  <p>Consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam.</p>
+  <p>Nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?</p>
+</article>
+
+<!-- ===== PAINT SECTION ===== -->
+<section class="paint-section" id="paintSection">
+  <div class="paint-stage">
+    <svg class="paint-svg" viewBox="0 0 400 520" preserveAspectRatio="xMidYMid meet" id="paintSvg">
+      <defs>
+        <clipPath id="voronoi-clip">
+          <circle cx="200" cy="200" r="190"/>
+        </clipPath>
+      </defs>
+
+      <!-- Voronoi cells rendered by d3 -->
+      <g clip-path="url(#voronoi-clip)" id="voronoiCells"></g>
+
+      <!-- Circle boundary -->
+      <circle cx="200" cy="200" r="190" fill="none" stroke="#555" stroke-width="2"/>
+
+      <!-- Pipette group -->
+      <g id="pipette" transform="translate(200, -160)">
+        <!-- Rotated inner group: pivot around barrel center -->
+        <g transform="rotate(45, 40, 130)">
+          <!-- Pipette body shapes -->
+          <g class="pipette-body">
+            <!-- Rubber bulb -->
+            <ellipse cx="40" cy="30" rx="40" ry="32" fill="#c65d2b"/>
+            <!-- Bulb highlight -->
+            <ellipse cx="30" cy="20" rx="14" ry="10" fill="#e08050" opacity="0.45"/>
+            <!-- Glass barrel -->
+            <rect x="20" y="60" width="40" height="170" rx="3" fill="#b0b0b0" opacity="0.9"/>
+            <!-- Glass shine -->
+            <rect x="26" y="60" width="12" height="170" rx="2" fill="#f0f0f0" opacity="0.25"/>
+            <!-- Metal collar -->
+            <rect x="20" y="228" width="40" height="8" rx="1" fill="#777"/>
+            <!-- Metal tip cone -->
+            <polygon points="20,234 60,234 42,285" fill="#999"/>
+            <!-- Tip opening (where drops come from) -->
+            <ellipse cx="42" cy="285" rx="5" ry="4" fill="#555"/>
+            <!-- Tiny drop residue at tip -->
+            <circle id="tipMarker" cx="42" cy="288" r="2.5" fill="#c8a86e" opacity="0.7"/>
+          </g>
+          <!-- Bulb hit area (only draggable part) -->
+          <circle class="bulb-hit" cx="40" cy="30" r="45" fill="transparent"/>
+        </g>
+      </g>
+
+      <!-- Drops container -->
+      <g id="dropsContainer"></g>
+    </svg>
+  </div>
+</section>
+
+<script>
+/* =========================================================
+   SCROLLYTELLING ANIMATION
+   ========================================================= */
+(function() {
+  var crane = document.getElementById('crane');
+  var object = document.getElementById('object');
+  var jawLeft = document.getElementById('jawLeft');
+  var jawRight = document.getElementById('jawRight');
+
+  var PILE_X = 200;
+  var TRUCK_X = 580;
+  var OBJ_ON_PILE_Y = 374;
+  var OBJ_ON_TRUCK_Y = 324;
+  var CRANE_OBJ_OFFSET = 290;
+  var CRANE_AT_PILE = OBJ_ON_PILE_Y - CRANE_OBJ_OFFSET;
+  var CRANE_AT_TRUCK = OBJ_ON_TRUCK_Y - CRANE_OBJ_OFFSET;
+
+  function lerp(a, b, t) { return a + (b - a) * t; }
+  function ease(t) { return t < 0.5 ? 2*t*t : -1+(4-2*t)*t; }
+
+  var manualProgress = 0;
+  var useManual = false;
+
+  function getProgress() {
+    var scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+    var scrollHeight = document.documentElement.scrollHeight || document.body.scrollHeight;
+    var clientHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+    var maxScroll = scrollHeight - clientHeight;
+    if (maxScroll <= 0) {
+      useManual = true;
+      return Math.max(0, Math.min(1, manualProgress));
+    }
+    useManual = false;
+    return Math.max(0, Math.min(1, scrollTop / maxScroll));
+  }
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+      manualProgress = Math.min(1, manualProgress + 0.02);
+      if (useManual) e.preventDefault();
+    } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+      manualProgress = Math.max(0, manualProgress - 0.02);
+      if (useManual) e.preventDefault();
+    }
+  });
+
+  function updateJaws(openT, grabT) {
+    var baseR = 28;
+    var holdR = 24;
+    var r = lerp(baseR, holdR, grabT);
+    var spread = openT * 22;
+    var cy = 290;
+
+    jawLeft.setAttribute('d',
+      'M ' + (200 - spread) + ' ' + (cy - r) +
+      ' A ' + r + ' ' + r + ' 0 0 0 ' + (200 - spread) + ' ' + (cy + r)
+    );
+    jawRight.setAttribute('d',
+      'M ' + (200 + spread) + ' ' + (cy - r) +
+      ' A ' + r + ' ' + r + ' 0 0 1 ' + (200 + spread) + ' ' + (cy + r)
+    );
+  }
+
+  function frame() {
+    var p = getProgress();
+
+    var craneX = PILE_X;
+    var craneY = 0;
+    var objX = PILE_X;
+    var objY = OBJ_ON_PILE_Y;
+    var jawOpen = 0;
+    var jawGrab = 0;
+    var carrying = false;
+
+    if (p < 0.12) {
+      var t = ease(p / 0.12);
+      craneY = lerp(0, CRANE_AT_PILE + 30, t);
+    } else if (p < 0.22) {
+      craneY = CRANE_AT_PILE + 30;
+      var t = ease((p - 0.12) / 0.10);
+      jawOpen = t;
+    } else if (p < 0.32) {
+      var t = ease((p - 0.22) / 0.10);
+      craneY = lerp(CRANE_AT_PILE + 30, CRANE_AT_PILE, t);
+      jawOpen = 1;
+      jawGrab = t;
+      carrying = t > 0.5;
+    } else if (p < 0.48) {
+      var t = ease((p - 0.32) / 0.16);
+      craneY = lerp(CRANE_AT_PILE, 50, t);
+      jawOpen = 0;
+      jawGrab = 1;
+      carrying = true;
+    } else if (p < 0.64) {
+      var t = ease((p - 0.48) / 0.16);
+      craneX = lerp(PILE_X, TRUCK_X, t);
+      craneY = 50;
+      jawOpen = 0;
+      jawGrab = 1;
+      carrying = true;
+    } else if (p < 0.78) {
+      var t = ease((p - 0.64) / 0.14);
+      craneX = TRUCK_X;
+      craneY = lerp(50, CRANE_AT_TRUCK, t);
+      jawOpen = 0;
+      jawGrab = 1;
+      carrying = true;
+    } else if (p < 0.88) {
+      var t = ease((p - 0.78) / 0.10);
+      craneX = TRUCK_X;
+      craneY = CRANE_AT_TRUCK;
+      jawOpen = t;
+      jawGrab = 1 - t;
+      carrying = t < 0.4;
+      if (!carrying) {
+        objX = TRUCK_X;
+        objY = OBJ_ON_TRUCK_Y;
+      }
+    } else {
+      var t = ease((p - 0.88) / 0.12);
+      craneX = TRUCK_X;
+      craneY = lerp(CRANE_AT_TRUCK, 0, t);
+      jawOpen = 1;
+      jawGrab = 0;
+      carrying = false;
+      objX = TRUCK_X;
+      objY = OBJ_ON_TRUCK_Y;
+    }
+
+    if (carrying) {
+      objX = craneX;
+      objY = craneY + CRANE_OBJ_OFFSET;
+    }
+
+    crane.setAttribute('transform', 'translate(' + (craneX - PILE_X) + ', ' + craneY + ')');
+    object.setAttribute('cx', objX);
+    object.setAttribute('cy', objY);
+    updateJaws(jawOpen, jawGrab);
+
+    requestAnimationFrame(frame);
+  }
+
+  requestAnimationFrame(frame);
+})();
+
+/* =========================================================
+   VORONOI TREEMAP (d3.js)
+   ========================================================= */
+(function() {
+  var cellsGroup = document.getElementById('voronoiCells');
+  var CX = 200, CY = 200, R = 190;
+
+  // Generate seed points uniformly inside the circle
+  var seeds = [];
+  for (var i = 0; i < 14; i++) {
+    var angle = Math.random() * Math.PI * 2;
+    var dist = Math.sqrt(Math.random()) * (R - 10);
+    seeds.push([CX + dist * Math.cos(angle), CY + dist * Math.sin(angle)]);
+  }
+
+  // Compute voronoi
+  var delaunay = d3.Delaunay.from(seeds);
+  var voronoi = delaunay.voronoi([0, 0, 400, 400]);
+
+  // Color palette (purple-blue family, no labels)
+  var palette = [
+    "#1a1a3e", "#222250", "#2a2a5e", "#32326c",
+    "#1e1e42", "#262654", "#2e2e66", "#363678",
+    "#1c1c40", "#242452", "#2c2c64", "#343476",
+    "#202048", "#28285a"
+  ];
+
+  for (var i = 0; i < seeds.length; i++) {
+    var polygon = voronoi.cellPolygon(i);
+    if (!polygon) continue;
+    var d = "M" + polygon.map(function(p) { return p[0] + "," + p[1]; }).join("L") + "Z";
+    var path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    path.setAttribute("d", d);
+    path.setAttribute("fill", palette[i % palette.length]);
+    path.setAttribute("stroke", "#0d0d0d");
+    path.setAttribute("stroke-width", "1.5");
+    path.setAttribute("stroke-opacity", "0.6");
+    cellsGroup.appendChild(path);
+  }
+})();
+
+/* =========================================================
+   PAINT SECTION — PIPETTE DRAG & DRIP
+   ========================================================= */
+(function() {
+  var paintSvg = document.getElementById('paintSvg');
+  var pipette = document.getElementById('pipette');
+  var bulbHit = pipette.querySelector('.bulb-hit');
+  var dropsContainer = document.getElementById('dropsContainer');
+  var paintSection = document.getElementById('paintSection');
+
+  // Reveal paint section when scrolled to bottom
+  var paintRevealed = false;
+  function checkBottom() {
+    if (paintRevealed) return;
+    var maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+    if (window.scrollY >= maxScroll - 300) {
+      paintRevealed = true;
+      paintSection.classList.add('visible');
+    }
+  }
+  window.addEventListener('scroll', checkBottom, { passive: true });
+  checkBottom();
+
+  // Pipette position (outer group translate)
+  var pipetteX = 200;
+  var pipetteY = -160;
+
+  // Local tip position inside the rotated inner group
+  var TIP_LOCAL_X = 42;
+  var TIP_LOCAL_Y = 288;
+
+  var dragging = false;
+  var dragOffX = 0;
+  var dragOffY = 0;
+  var pt = paintSvg.createSVGPoint();
+
+  function toSvgSpace(clientX, clientY) {
+    pt.x = clientX;
+    pt.y = clientY;
+    var p = pt.matrixTransform(paintSvg.getScreenCTM().inverse());
+    return { x: p.x, y: p.y };
+  }
+
+  function setPipettePos(x, y) {
+    pipetteX = x;
+    pipetteY = y;
+    pipette.setAttribute('transform', 'translate(' + x + ',' + y + ')');
+  }
+
+  function getTipPosition() {
+    var tipPt = paintSvg.createSVGPoint();
+    tipPt.x = TIP_LOCAL_X;
+    tipPt.y = TIP_LOCAL_Y;
+    // CTM of inner rotated group includes both rotate() and parent translate()
+    var innerGroup = pipette.querySelector('g');
+    var ctm = innerGroup.getCTM();
+    var global = tipPt.matrixTransform(ctm);
+    return { x: global.x, y: global.y };
+  }
+
+  function onDown(e) {
+    var pos = e.touches ? e.touches[0] : e;
+    var svgP = toSvgSpace(pos.clientX, pos.clientY);
+    dragOffX = svgP.x - pipetteX;
+    dragOffY = svgP.y - pipetteY;
+    dragging = true;
+    bulbHit.classList.add('dragging');
+    e.preventDefault();
+  }
+
+  function onMove(e) {
+    if (!dragging) return;
+    var pos = e.touches ? e.touches[0] : e;
+    var svgP = toSvgSpace(pos.clientX, pos.clientY);
+    setPipettePos(svgP.x - dragOffX, svgP.y - dragOffY);
+  }
+
+  function onUp() {
+    dragging = false;
+    bulbHit.classList.remove('dragging');
+  }
+
+  bulbHit.addEventListener('mousedown', onDown);
+  bulbHit.addEventListener('touchstart', onDown, { passive: false });
+
+  document.addEventListener('mousemove', onMove);
+  document.addEventListener('touchmove', onMove, { passive: false });
+
+  document.addEventListener('mouseup', onUp);
+  document.addEventListener('touchend', onUp);
+
+  /* ---- Drops ---- */
+  var drops = [];
+  var dripTimer = 0;
+  var DROP_INTERVAL = 100; // frames (~1.7s at 60fps)
+
+  function createDrop() {
+    var tip = getTipPosition();
+
+    var drop = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    drop.setAttribute('cx', tip.x);
+    drop.setAttribute('cy', tip.y);
+    drop.setAttribute('r', 5);
+    drop.setAttribute('fill', '#c8a86e');
+    drop.setAttribute('opacity', 0.9);
+    drop.setAttribute('class', 'drop');
+    dropsContainer.appendChild(drop);
+
+    drops.push({
+      el: drop,
+      x: tip.x,
+      y: tip.y,
+      vy: 0,
+      opacity: 0.9,
+      radius: 5
+    });
+  }
+
+  function updateDrops() {
+    // Only drip while dragging
+    if (dragging) {
+      dripTimer++;
+      if (dripTimer >= DROP_INTERVAL) {
+        dripTimer = 0;
+        createDrop();
+      }
+    }
+
+    for (var i = drops.length - 1; i >= 0; i--) {
+      var d = drops[i];
+      d.vy += 0.45; // gravity
+      d.y += d.vy;
+      d.opacity -= 0.009;
+      d.radius = Math.max(1.2, d.radius - 0.012);
+
+      d.el.setAttribute('cy', d.y);
+      d.el.setAttribute('opacity', Math.max(0, d.opacity));
+      d.el.setAttribute('r', d.radius);
+
+      // Remove when fully faded or far below viewport
+      if (d.opacity <= 0 || d.y > 600) {
+        d.el.remove();
+        drops.splice(i, 1);
+      }
+    }
+
+    requestAnimationFrame(updateDrops);
+  }
+
+  requestAnimationFrame(updateDrops);
+})();
+</script>
+
+</body>
+</html>

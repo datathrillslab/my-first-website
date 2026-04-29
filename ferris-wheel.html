@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Ferris Wheel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1B1830;
+    --ink-soft: #3A3556;
+    --cream: #FFF1DD;
+    --paper: #FFF6E8;
+    --sky-1: #FFD7A8;
+    --sky-2: #F5A07B;
+    --sky-3: #B98AB0;
+    --sky-4: #4F4D7A;
+    --ground: #C99A6A;
+    --ground-shadow: #8C6841;
+    --accent: #E8642F;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    width: 100%;
+    min-height: 100vh;
+    overflow-x: hidden;
+    color: var(--ink);
+    background:
+      radial-gradient(ellipse 80% 60% at 80% 18%, rgba(255, 232, 178, 0.6), transparent 60%),
+      linear-gradient(180deg, var(--sky-1) 0%, var(--sky-2) 28%, var(--sky-3) 60%, var(--sky-4) 100%);
+    background-attachment: fixed;
+    font-family: 'Manrope', system-ui, sans-serif;
+  }
+  body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 28px 16px 28px;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .header { text-align: center; margin-bottom: 10px; }
+  .eyebrow {
+    font-family: 'Manrope', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink);
+    opacity: 0.55;
+  }
+  .title {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 500;
+    font-size: clamp(38px, 7vw, 64px);
+    letter-spacing: -0.025em;
+    line-height: 1;
+    color: var(--ink);
+    margin-top: 4px;
+  }
+  .subtitle {
+    font-size: 13px;
+    margin-top: 8px;
+    color: var(--ink);
+    opacity: 0.65;
+    letter-spacing: 0.01em;
+    max-width: 360px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .scene {
+    width: 100%;
+    max-width: 720px;
+    aspect-ratio: 1 / 1;
+    position: relative;
+    margin-top: 8px;
+  }
+  svg.scene-svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+    overflow: visible;
+    touch-action: none;
+  }
+  .figure { cursor: grab; touch-action: none; transition: filter 0.15s ease; }
+  .figure.dragging { cursor: grabbing; filter: drop-shadow(0 6px 10px rgba(0,0,0,0.28)); }
+  .figure .body-parts { transition: opacity 0.18s ease; }
+  .figure.in-cabin .body-parts { opacity: 0; }
+
+  .controls {
+    width: 100%;
+    max-width: 520px;
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    background: rgba(255, 246, 232, 0.55);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(27, 24, 48, 0.12);
+    border-radius: 18px;
+    padding: 16px 18px;
+    box-shadow: 0 10px 30px rgba(27, 24, 48, 0.08);
+  }
+  .row { display: flex; align-items: center; gap: 14px; }
+  .label {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 15px;
+    font-weight: 500;
+    min-width: 56px;
+    color: var(--ink);
+  }
+  .value {
+    font-family: 'Fraunces', serif;
+    font-variant-numeric: tabular-nums;
+    font-weight: 500;
+    min-width: 38px;
+    text-align: right;
+    font-size: 15px;
+    color: var(--ink);
+  }
+  input[type=range] {
+    flex: 1;
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    height: 22px;
+  }
+  input[type=range]::-webkit-slider-runnable-track {
+    height: 4px;
+    background: rgba(27, 24, 48, 0.2);
+    border-radius: 2px;
+  }
+  input[type=range]::-moz-range-track {
+    height: 4px;
+    background: rgba(27, 24, 48, 0.2);
+    border-radius: 2px;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--ink);
+    border: 3px solid var(--paper);
+    margin-top: -8px;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  }
+  input[type=range]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--ink);
+    border: 3px solid var(--paper);
+    cursor: pointer;
+  }
+  button {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    background: var(--ink);
+    color: var(--cream);
+    border: none;
+    border-radius: 999px;
+    padding: 10px 18px;
+    cursor: pointer;
+    transition: transform 0.1s ease, background 0.2s ease;
+  }
+  button:hover { background: var(--accent); }
+  button:active { transform: scale(0.96); }
+
+  .hint {
+    font-size: 12px;
+    color: var(--ink);
+    opacity: 0.6;
+    font-style: italic;
+    font-family: 'Fraunces', serif;
+  }
+
+  footer {
+    margin-top: 16px;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink);
+    opacity: 0.4;
+  }
+</style>
+</head>
+<body>
+  <header class="header">
+    <div class="eyebrow">Sundown carnival</div>
+    <h1 class="title">The Ferris Wheel</h1>
+    <p class="subtitle">grab a rider and toss them around — drop one near an empty seat to put them back aboard</p>
+  </header>
+
+  <div class="scene">
+    <svg class="scene-svg" viewBox="0 0 720 720" id="scene" preserveAspectRatio="xMidYMid meet">
+
+      <!-- soft halo behind sun -->
+      <circle cx="572" cy="148" r="80" fill="#FFE8B4" opacity="0.5"/>
+      <circle cx="572" cy="148" r="46" fill="#FFD691" opacity="0.85"/>
+
+      <!-- distant clouds -->
+      <g opacity="0.55" fill="#FFF6E8">
+        <ellipse cx="120" cy="170" rx="44" ry="9"/>
+        <ellipse cx="148" cy="162" rx="28" ry="7"/>
+        <ellipse cx="640" cy="280" rx="36" ry="7"/>
+      </g>
+
+      <!-- ground -->
+      <rect x="0" y="640" width="720" height="80" fill="#C99A6A"/>
+      <rect x="0" y="638" width="720" height="3" fill="#A47B4C"/>
+      <g stroke="#A47B4C" stroke-width="1.5" stroke-linecap="round" opacity="0.45">
+        <line x1="40" y1="660" x2="60" y2="660"/>
+        <line x1="110" y1="675" x2="135" y2="675"/>
+        <line x1="220" y1="665" x2="245" y2="665"/>
+        <line x1="430" y1="668" x2="455" y2="668"/>
+        <line x1="540" y1="678" x2="565" y2="678"/>
+        <line x1="615" y1="660" x2="640" y2="660"/>
+      </g>
+
+      <!-- support frame -->
+      <g stroke="#1B1830" stroke-linecap="round" fill="none">
+        <line x1="360" y1="320" x2="200" y2="640" stroke-width="10"/>
+        <line x1="360" y1="320" x2="520" y2="640" stroke-width="10"/>
+        <line x1="160" y1="640" x2="560" y2="640" stroke-width="14"/>
+        <!-- cross brace -->
+        <line x1="280" y1="480" x2="440" y2="480" stroke-width="5"/>
+      </g>
+
+      <!-- rotating wheel -->
+      <g id="wheel">
+        <circle cx="360" cy="320" r="240" fill="none" stroke="#1B1830" stroke-width="4"/>
+        <circle cx="360" cy="320" r="232" fill="none" stroke="#1B1830" stroke-width="2" opacity="0.5"/>
+        <line x1="360" y1="80" x2="360" y2="560" stroke="#1B1830" stroke-width="3"/>
+        <line x1="529.7" y1="150.3" x2="190.3" y2="489.7" stroke="#1B1830" stroke-width="3"/>
+        <line x1="600" y1="320" x2="120" y2="320" stroke="#1B1830" stroke-width="3"/>
+        <line x1="529.7" y1="489.7" x2="190.3" y2="150.3" stroke="#1B1830" stroke-width="3"/>
+        <circle cx="360" cy="320" r="20" fill="#1B1830"/>
+        <circle cx="360" cy="320" r="7" fill="#FFF1DD"/>
+      </g>
+
+      <!-- cabins (always upright) -->
+      <g id="cabins"></g>
+
+      <!-- figures (rendered last, on top) -->
+      <g id="figures"></g>
+    </svg>
+  </div>
+
+  <div class="controls">
+    <div class="row">
+      <span class="label">Speed</span>
+      <input type="range" min="-100" max="100" value="35" step="1" id="speed" aria-label="Wheel speed">
+      <span class="value" id="speedOut">35</span>
+    </div>
+    <div class="row" style="justify-content: space-between; gap: 12px;">
+      <span class="hint">drop near a seat to board · empty space to land</span>
+      <button id="reset" type="button">Send everyone back</button>
+    </div>
+  </div>
+
+  <footer>made of pixels &amp; pretend</footer>
+
+<script>
+(function () {
+  const NS = "http://www.w3.org/2000/svg";
+  const SCENE = 720;
+  const cx = 360, cy = 320, R = 240;
+  const cabinW = 58, cabinH = 42;
+  const armLen = 10;
+  const groundY = 640;
+
+  const sceneSvg = document.getElementById("scene");
+  const cabinsG = document.getElementById("cabins");
+  const figuresG = document.getElementById("figures");
+  const wheelG = document.getElementById("wheel");
+  const speedEl = document.getElementById("speed");
+  const speedOut = document.getElementById("speedOut");
+  const resetBtn = document.getElementById("reset");
+
+  // Cabin colors — warm carnival palette
+  const cabinColors = [
+    { fill: "#E8642F", stroke: "#5C2410" }, // terracotta
+    { fill: "#E8B53C", stroke: "#5C460F" }, // mustard
+    { fill: "#7CA88A", stroke: "#2E4233" }, // sage
+    { fill: "#3C8E89", stroke: "#163533" }, // teal
+    { fill: "#6B8DA8", stroke: "#283849" }, // dusty blue
+    { fill: "#9C6DB8", stroke: "#3D2B4A" }, // plum
+    { fill: "#D87391", stroke: "#5C2C3D" }, // rose
+    { fill: "#C5644A", stroke: "#4D2417" }  // brick
+  ];
+
+  // Figure variations — distinct personalities
+  const figureSpec = [
+    { skin: "#F4C99E", shirt: "#3D4471", pants: "#1B1830", hair: { type: "tuft", color: "#3A1F0A" } },
+    { skin: "#E8B286", shirt: "#A8453E", pants: "#1B1830", hair: { type: "wave", color: "#E8C078" } },
+    { skin: "#F4C99E", shirt: "#2D6A4F", pants: "#1B1830", hair: { type: "cap",  color: "#A8453E" } },
+    { skin: "#D9A275", shirt: "#E8B53C", pants: "#1B1830", hair: { type: "buns", color: "#1A0F08" } },
+    { skin: "#F4C99E", shirt: "#7C4DAA", pants: "#1B1830", hair: { type: "sunhat", color: "#E8B53C" } },
+    { skin: "#E8B286", shirt: "#D87391", pants: "#1B1830", hair: { type: "ponytail", color: "#3A1F0A" } },
+    { skin: "#F4C99E", shirt: "#1E483F", pants: "#1B1830", hair: { type: "bowler", color: "#1B1830" } },
+    { skin: "#D9A275", shirt: "#3782B5", pants: "#1B1830", hair: { type: "bald", color: null } }
+  ];
+
+  // ---- Build cabins ----
+  const cabins = [];
+  for (let i = 0; i < 8; i++) {
+    const baseAngle = (i / 8) * Math.PI * 2 - Math.PI / 2;
+    const c = cabinColors[i];
+    const g = document.createElementNS(NS, "g");
+
+    const arm = document.createElementNS(NS, "line");
+    arm.setAttribute("stroke", "#1B1830");
+    arm.setAttribute("stroke-width", "3");
+    arm.setAttribute("stroke-linecap", "round");
+    g.appendChild(arm);
+
+    // tiny pivot dot on the rim
+    const pivot = document.createElementNS(NS, "circle");
+    pivot.setAttribute("r", "3.5");
+    pivot.setAttribute("fill", "#1B1830");
+    g.appendChild(pivot);
+
+    const body = document.createElementNS(NS, "rect");
+    body.setAttribute("width", cabinW);
+    body.setAttribute("height", cabinH);
+    body.setAttribute("rx", "10");
+    body.setAttribute("fill", c.fill);
+    body.setAttribute("stroke", c.stroke);
+    body.setAttribute("stroke-width", "2.5");
+    g.appendChild(body);
+
+    // a little stripe across the cabin
+    const stripe = document.createElementNS(NS, "rect");
+    stripe.setAttribute("width", cabinW - 8);
+    stripe.setAttribute("height", "3");
+    stripe.setAttribute("fill", c.stroke);
+    stripe.setAttribute("opacity", "0.45");
+    g.appendChild(stripe);
+
+    cabinsG.appendChild(g);
+    cabins.push({ baseAngle, arm, pivot, body, stripe, color: c, x: 0, y: 0 });
+  }
+
+  // ---- Build figures ----
+  function buildHair(parent, hair, skin) {
+    if (hair.type === "tuft") {
+      const p = document.createElementNS(NS, "path");
+      p.setAttribute("d", "M -5,-10 Q -4,-15 0,-15 Q 4,-15 5,-10 Q 3,-12 0,-12 Q -3,-12 -5,-10 Z");
+      p.setAttribute("fill", hair.color);
+      parent.appendChild(p);
+    } else if (hair.type === "wave") {
+      const p = document.createElementNS(NS, "path");
+      p.setAttribute("d", "M -5.5,-10 Q -6,-14 -2,-15 Q 0,-16 2,-15 Q 6,-14 5.5,-10 Q 4,-12 0,-12 Q -4,-12 -5.5,-10 Z");
+      p.setAttribute("fill", hair.color);
+      parent.appendChild(p);
+    } else if (hair.type === "cap") {
+      const p = document.createElementNS(NS, "path");
+      p.setAttribute("d", "M -5,-10 Q -5,-15 0,-15 Q 5,-15 5,-10 Z");
+      p.setAttribute("fill", hair.color);
+      parent.appendChild(p);
+      const brim = document.createElementNS(NS, "rect");
+      brim.setAttribute("x", "-1"); brim.setAttribute("y", "-10.5");
+      brim.setAttribute("width", "9"); brim.setAttribute("height", "1.7");
+      brim.setAttribute("fill", hair.color);
+      parent.appendChild(brim);
+    } else if (hair.type === "buns") {
+      const l = document.createElementNS(NS, "circle");
+      l.setAttribute("cx", "-5.5"); l.setAttribute("cy", "-11"); l.setAttribute("r", "2.5");
+      l.setAttribute("fill", hair.color);
+      parent.appendChild(l);
+      const r = document.createElementNS(NS, "circle");
+      r.setAttribute("cx", "5.5"); r.setAttribute("cy", "-11"); r.setAttribute("r", "2.5");
+      r.setAttribute("fill", hair.color);
+      parent.appendChild(r);
+      const top = document.createElementNS(NS, "path");
+      top.setAttribute("d", "M -5,-10.5 Q 0,-14 5,-10.5 Q 3,-12 0,-12 Q -3,-12 -5,-10.5 Z");
+      top.setAttribute("fill", hair.color);
+      parent.appendChild(top);
+    } else if (hair.type === "sunhat") {
+      const brim = document.createElementNS(NS, "ellipse");
+      brim.setAttribute("cx", "0"); brim.setAttribute("cy", "-10");
+      brim.setAttribute("rx", "9"); brim.setAttribute("ry", "1.8");
+      brim.setAttribute("fill", hair.color);
+      brim.setAttribute("stroke", "#1B1830"); brim.setAttribute("stroke-width", "0.6");
+      parent.appendChild(brim);
+      const top = document.createElementNS(NS, "path");
+      top.setAttribute("d", "M -3.5,-10 Q -3.5,-15 0,-15 Q 3.5,-15 3.5,-10 Z");
+      top.setAttribute("fill", hair.color);
+      top.setAttribute("stroke", "#1B1830"); top.setAttribute("stroke-width", "0.6");
+      parent.appendChild(top);
+      const band = document.createElementNS(NS, "rect");
+      band.setAttribute("x", "-3.5"); band.setAttribute("y", "-11");
+      band.setAttribute("width", "7"); band.setAttribute("height", "1.2");
+      band.setAttribute("fill", "#1B1830");
+      parent.appendChild(band);
+    } else if (hair.type === "ponytail") {
+      const back = document.createElementNS(NS, "path");
+      back.setAttribute("d", "M 5,-9 Q 9,-7 8,-2 Q 7,2 5,2");
+      back.setAttribute("fill", hair.color);
+      parent.appendChild(back);
+      const top = document.createElementNS(NS, "path");
+      top.setAttribute("d", "M -5,-10 Q -4,-15 0,-15 Q 5,-15 5.5,-10 Q 3,-12 0,-12 Q -3,-12 -5,-10 Z");
+      top.setAttribute("fill", hair.color);
+      parent.appendChild(top);
+    } else if (hair.type === "bowler") {
+      const brim = document.createElementNS(NS, "rect");
+      brim.setAttribute("x", "-7"); brim.setAttribute("y", "-10.5");
+      brim.setAttribute("width", "14"); brim.setAttribute("height", "1.6");
+      brim.setAttribute("fill", hair.color);
+      parent.appendChild(brim);
+      const top = document.createElementNS(NS, "path");
+      top.setAttribute("d", "M -4.2,-10 Q -4.2,-15 0,-15 Q 4.2,-15 4.2,-10 Z");
+      top.setAttribute("fill", hair.color);
+      parent.appendChild(top);
+    } else if (hair.type === "bald") {
+      // small shine
+      const s = document.createElementNS(NS, "ellipse");
+      s.setAttribute("cx", "-1.5"); s.setAttribute("cy", "-12");
+      s.setAttribute("rx", "1.4"); s.setAttribute("ry", "0.7");
+      s.setAttribute("fill", "#FFFFFF"); s.setAttribute("opacity", "0.5");
+      parent.appendChild(s);
+    }
+  }
+
+  const figures = [];
+  for (let i = 0; i < 8; i++) {
+    const spec = figureSpec[i];
+    const g = document.createElementNS(NS, "g");
+    g.setAttribute("class", "figure in-cabin");
+    g.setAttribute("data-i", i);
+
+    // hit area (transparent rect for easier grabbing)
+    const hit = document.createElementNS(NS, "rect");
+    hit.setAttribute("x", "-12"); hit.setAttribute("y", "-18");
+    hit.setAttribute("width", "24"); hit.setAttribute("height", "36");
+    hit.setAttribute("fill", "rgba(0,0,0,0)");
+    hit.setAttribute("pointer-events", "all");
+    g.appendChild(hit);
+
+    // body parts group (hidden when in cabin)
+    const bodyParts = document.createElementNS(NS, "g");
+    bodyParts.setAttribute("class", "body-parts");
+
+    // torso
+    const torso = document.createElementNS(NS, "line");
+    torso.setAttribute("x1", "0"); torso.setAttribute("y1", "-4");
+    torso.setAttribute("x2", "0"); torso.setAttribute("y2", "8");
+    torso.setAttribute("stroke", spec.shirt);
+    torso.setAttribute("stroke-width", "5.5");
+    torso.setAttribute("stroke-linecap", "round");
+    bodyParts.appendChild(torso);
+
+    // arms
+    const armL = document.createElementNS(NS, "line");
+    armL.setAttribute("x1", "0"); armL.setAttribute("y1", "-2");
+    armL.setAttribute("x2", "-6"); armL.setAttribute("y2", "5");
+    armL.setAttribute("stroke", spec.skin);
+    armL.setAttribute("stroke-width", "2.6");
+    armL.setAttribute("stroke-linecap", "round");
+    bodyParts.appendChild(armL);
+    const armR = document.createElementNS(NS, "line");
+    armR.setAttribute("x1", "0"); armR.setAttribute("y1", "-2");
+    armR.setAttribute("x2", "6"); armR.setAttribute("y2", "5");
+    armR.setAttribute("stroke", spec.skin);
+    armR.setAttribute("stroke-width", "2.6");
+    armR.setAttribute("stroke-linecap", "round");
+    bodyParts.appendChild(armR);
+
+    // legs
+    const legL = document.createElementNS(NS, "line");
+    legL.setAttribute("x1", "0"); legL.setAttribute("y1", "8");
+    legL.setAttribute("x2", "-3.5"); legL.setAttribute("y2", "16");
+    legL.setAttribute("stroke", spec.pants);
+    legL.setAttribute("stroke-width", "2.8");
+    legL.setAttribute("stroke-linecap", "round");
+    bodyParts.appendChild(legL);
+    const legR = document.createElementNS(NS, "line");
+    legR.setAttribute("x1", "0"); legR.setAttribute("y1", "8");
+    legR.setAttribute("x2", "3.5"); legR.setAttribute("y2", "16");
+    legR.setAttribute("stroke", spec.pants);
+    legR.setAttribute("stroke-width", "2.8");
+    legR.setAttribute("stroke-linecap", "round");
+    bodyParts.appendChild(legR);
+
+    g.appendChild(bodyParts);
+
+    // head + face (always shown)
+    const headGroup = document.createElementNS(NS, "g");
+    headGroup.setAttribute("class", "head-parts");
+
+    const head = document.createElementNS(NS, "circle");
+    head.setAttribute("cx", "0"); head.setAttribute("cy", "-9");
+    head.setAttribute("r", "5.4");
+    head.setAttribute("fill", spec.skin);
+    head.setAttribute("stroke", "#1B1830");
+    head.setAttribute("stroke-width", "1.2");
+    headGroup.appendChild(head);
+
+    if (spec.hair) buildHair(headGroup, spec.hair, spec.skin);
+
+    const eyeL = document.createElementNS(NS, "circle");
+    eyeL.setAttribute("cx", "-1.7"); eyeL.setAttribute("cy", "-9");
+    eyeL.setAttribute("r", "0.75");
+    eyeL.setAttribute("fill", "#1B1830");
+    headGroup.appendChild(eyeL);
+    const eyeR = document.createElementNS(NS, "circle");
+    eyeR.setAttribute("cx", "1.7"); eyeR.setAttribute("cy", "-9");
+    eyeR.setAttribute("r", "0.75");
+    eyeR.setAttribute("fill", "#1B1830");
+    headGroup.appendChild(eyeR);
+
+    const smile = document.createElementNS(NS, "path");
+    smile.setAttribute("d", "M -1.6,-7 Q 0,-5.8 1.6,-7");
+    smile.setAttribute("stroke", "#1B1830");
+    smile.setAttribute("stroke-width", "0.85");
+    smile.setAttribute("fill", "none");
+    smile.setAttribute("stroke-linecap", "round");
+    headGroup.appendChild(smile);
+
+    g.appendChild(headGroup);
+
+    figuresG.appendChild(g);
+
+    figures.push({
+      i, g, hit,
+      state: "in_cabin",
+      cabinIdx: i,
+      x: 0, y: 0,
+      vx: 0, vy: 0,
+      rot: 0, rotV: 0,
+      offX: 0, offY: 0,
+      lastMoveT: 0
+    });
+  }
+
+  // ---- Animation state ----
+  let wheelDeg = 0;
+  let speed = parseInt(speedEl.value, 10);
+  let lastT = performance.now();
+
+  function syncSpeed() {
+    speed = parseInt(speedEl.value, 10);
+    speedOut.textContent = speed;
+  }
+  speedEl.addEventListener("input", syncSpeed);
+  syncSpeed();
+
+  // ---- Pointer / drag handling ----
+  let dragging = null;
+
+  function svgPoint(evt) {
+    const rect = sceneSvg.getBoundingClientRect();
+    const x = (evt.clientX - rect.left) * (SCENE / rect.width);
+    const y = (evt.clientY - rect.top) * (SCENE / rect.height);
+    return { x, y };
+  }
+
+  figuresG.addEventListener("pointerdown", (e) => {
+    const target = e.target.closest(".figure");
+    if (!target) return;
+    e.preventDefault();
+    const idx = parseInt(target.getAttribute("data-i"), 10);
+    const f = figures[idx];
+    const pt = svgPoint(e);
+
+    // free up the cabin if it was in one
+    f.cabinIdx = -1;
+    f.state = "dragging";
+    f.g.classList.remove("in-cabin");
+    f.g.classList.add("dragging");
+
+    // compute current visual anchor and offset
+    f.offX = pt.x - f.x;
+    f.offY = pt.y - f.y;
+    f.vx = 0; f.vy = 0;
+    f.rotV = 0;
+    f.lastMoveT = performance.now();
+
+    // bring to front
+    figuresG.appendChild(f.g);
+    dragging = f;
+  });
+
+  document.addEventListener("pointermove", (e) => {
+    if (!dragging) return;
+    const pt = svgPoint(e);
+    const now = performance.now();
+    const dt = Math.max(0.001, (now - dragging.lastMoveT) / 1000);
+    dragging.lastMoveT = now;
+
+    const newX = pt.x - dragging.offX;
+    const newY = pt.y - dragging.offY;
+    // smooth velocity estimate (for throw)
+    const instVx = (newX - dragging.x) / dt;
+    const instVy = (newY - dragging.y) / dt;
+    dragging.vx = dragging.vx * 0.6 + instVx * 0.4;
+    dragging.vy = dragging.vy * 0.6 + instVy * 0.4;
+
+    dragging.x = newX;
+    dragging.y = newY;
+  });
+
+  function endDrag() {
+    if (!dragging) return;
+    const f = dragging;
+    f.g.classList.remove("dragging");
+
+    // find nearest empty cabin within snap distance
+    const SNAP = 55;
+    let bestIdx = -1, bestDist = SNAP;
+    for (let c = 0; c < cabins.length; c++) {
+      const taken = figures.some(x => x !== f && x.state === "in_cabin" && x.cabinIdx === c);
+      if (taken) continue;
+      const cab = cabins[c];
+      const dx = f.x - cab.x;
+      const dy = (f.y) - (cab.y - 8);
+      const d = Math.hypot(dx, dy);
+      if (d < bestDist) { bestDist = d; bestIdx = c; }
+    }
+
+    if (bestIdx >= 0) {
+      f.state = "in_cabin";
+      f.cabinIdx = bestIdx;
+      f.vx = 0; f.vy = 0;
+      f.rot = 0; f.rotV = 0;
+      f.g.classList.add("in-cabin");
+    } else {
+      f.state = "free";
+      // cap throw velocity
+      f.vx = Math.max(-900, Math.min(900, f.vx));
+      f.vy = Math.max(-900, Math.min(900, f.vy));
+      // initial spin influenced by horizontal throw
+      f.rotV = f.vx * 0.6 + (Math.random() - 0.5) * 200;
+    }
+    dragging = null;
+  }
+
+  document.addEventListener("pointerup", endDrag);
+  document.addEventListener("pointercancel", endDrag);
+
+  resetBtn.addEventListener("click", () => {
+    for (let i = 0; i < figures.length; i++) {
+      const f = figures[i];
+      f.state = "in_cabin";
+      f.cabinIdx = i;
+      f.vx = 0; f.vy = 0;
+      f.rot = 0; f.rotV = 0;
+      f.g.classList.add("in-cabin");
+      f.g.classList.remove("dragging");
+    }
+  });
+
+  // ---- Main loop ----
+  function tick(now) {
+    const dt = Math.min(0.05, (now - lastT) / 1000);
+    lastT = now;
+
+    // rotate wheel
+    wheelDeg += (speed / 100) * 110 * dt;
+    if (wheelDeg > 720) wheelDeg -= 720;
+    if (wheelDeg < -720) wheelDeg += 720;
+    wheelG.setAttribute("transform", `rotate(${wheelDeg} ${cx} ${cy})`);
+
+    // update cabins
+    const wheelRad = wheelDeg * Math.PI / 180;
+    for (const c of cabins) {
+      const a = c.baseAngle + wheelRad;
+      const px = cx + R * Math.cos(a);
+      const py = cy + R * Math.sin(a);
+      const topY = py + armLen;
+      const bx = px - cabinW / 2;
+      const by = topY;
+      c.x = px;
+      c.y = topY + cabinH / 2;
+
+      c.arm.setAttribute("x1", px);
+      c.arm.setAttribute("y1", py);
+      c.arm.setAttribute("x2", px);
+      c.arm.setAttribute("y2", topY);
+
+      c.pivot.setAttribute("cx", px);
+      c.pivot.setAttribute("cy", py);
+
+      c.body.setAttribute("x", bx);
+      c.body.setAttribute("y", by);
+
+      c.stripe.setAttribute("x", bx + 4);
+      c.stripe.setAttribute("y", by + cabinH - 12);
+    }
+
+    // update figures
+    for (const f of figures) {
+      let ax, ay, rot = 0;
+
+      if (f.state === "in_cabin") {
+        const cab = cabins[f.cabinIdx];
+        // anchor placed so head pokes above cabin top
+        ax = cab.x;
+        ay = cab.y - 16;
+        f.x = ax;
+        f.y = ay;
+        rot = 0;
+      } else if (f.state === "dragging") {
+        ax = f.x;
+        ay = f.y;
+        rot = Math.sin(now / 110) * 4;
+      } else {
+        // free — gravity + air drag
+        f.vy += 1300 * dt;
+        f.vx *= Math.pow(0.985, dt * 60);
+        f.x += f.vx * dt;
+        f.y += f.vy * dt;
+        f.rot += f.rotV * dt;
+        f.rotV *= Math.pow(0.97, dt * 60);
+
+        // ground (legs at y+16)
+        const restY = groundY - 16;
+        if (f.y >= restY) {
+          f.y = restY;
+          if (Math.abs(f.vy) > 50) {
+            f.vy = -f.vy * 0.35;
+            f.rotV = (Math.random() - 0.5) * 400 + f.vx * 0.4;
+          } else {
+            f.vy = 0;
+          }
+          // friction on ground
+          f.vx *= 0.85;
+          if (Math.abs(f.vx) < 8) f.vx = 0;
+          // settle rotation toward upright
+          if (Math.abs(f.vx) < 8 && Math.abs(f.vy) < 8) {
+            f.rotV *= 0.7;
+            // gentle spring back to upright
+            const target = 0;
+            const diff = ((f.rot % 360) + 540) % 360 - 180; // wrap to -180..180
+            f.rotV -= diff * 6 * dt;
+            if (Math.abs(diff) < 1 && Math.abs(f.rotV) < 5) {
+              f.rot = 0;
+              f.rotV = 0;
+            }
+          }
+        }
+        // walls
+        if (f.x < 14) { f.x = 14; f.vx = Math.abs(f.vx) * 0.5; }
+        if (f.x > SCENE - 14) { f.x = SCENE - 14; f.vx = -Math.abs(f.vx) * 0.5; }
+
+        ax = f.x; ay = f.y;
+        rot = f.rot;
+      }
+
+      f.g.setAttribute("transform", `translate(${ax.toFixed(2)}, ${ay.toFixed(2)}) rotate(${rot.toFixed(2)})`);
+    }
+
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+
+  // Initial layout pass so figures and cabins are positioned on first paint
+  for (const c of cabins) {
+    const px = cx + R * Math.cos(c.baseAngle);
+    const py = cy + R * Math.sin(c.baseAngle);
+    const topY = py + armLen;
+    c.x = px;
+    c.y = topY + cabinH / 2;
+    c.arm.setAttribute("x1", px); c.arm.setAttribute("y1", py);
+    c.arm.setAttribute("x2", px); c.arm.setAttribute("y2", topY);
+    c.pivot.setAttribute("cx", px); c.pivot.setAttribute("cy", py);
+    c.body.setAttribute("x", px - cabinW / 2); c.body.setAttribute("y", topY);
+    c.stripe.setAttribute("x", px - cabinW / 2 + 4);
+    c.stripe.setAttribute("y", topY + cabinH - 12);
+  }
+  for (const f of figures) {
+    const cab = cabins[f.cabinIdx];
+    f.x = cab.x;
+    f.y = cab.y - 16;
+    f.g.setAttribute("transform", `translate(${f.x}, ${f.y})`);
+  }
+})();
+</script>
+</body>
+</html>

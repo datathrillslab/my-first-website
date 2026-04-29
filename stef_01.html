@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Setting the Table — Scrollytelling Demo</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #faf7f0;
+    color: #444;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Total scroll length controls pacing. Increase to slow the story down. */
+  .scroll-container {
+    height: 600vh;
+    position: relative;
+  }
+
+  .sticky-stage {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    perspective: 2400px;          /* gives the flip a subtle 3D feel */
+  }
+
+  .stage {
+    position: relative;
+    width: min(85vw, 1100px);
+    aspect-ratio: 16 / 10;
+    transform-style: preserve-3d;
+  }
+
+  /* ======================================================================
+     ELEMENT PLACEHOLDERS
+     Each shape lives in its own SVG so you can swap them out later.
+     ====================================================================== */
+
+  /* Top-down dining table */
+  .element-table {
+    position: absolute;
+    left: 5%; right: 5%;
+    top: 20%; bottom: 20%;
+  }
+
+  /* Surface revealed beneath each plate after the flip */
+  .surface-mark {
+    position: absolute;
+    width: 13%;
+    aspect-ratio: 1;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0;
+    pointer-events: none;
+  }
+  .surface-mark.left  { left: 23.5%; }
+  .surface-mark.right { left: 63.5%; }
+
+  /* Hands — rectangles that slide in from the sides. `left` is set by JS. */
+  .hand {
+    position: absolute;
+    top: 50%;
+    width: 38%;
+    height: 11%;
+    transform: translateY(-50%);
+  }
+
+  /* Plate wrappers — `left` is set by JS to follow the hands, then stay put. */
+  .plate-wrap {
+    position: absolute;
+    width: 13%;
+    aspect-ratio: 1;
+    top: 50%;
+    transform: translateY(-50%);
+    transform-style: preserve-3d;
+  }
+
+  /* The flipper holds top + bottom faces and rotates around its outer edge. */
+  .plate-flipper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+  }
+  .plate-wrap.left  .plate-flipper { transform-origin:   0% 50%; }  /* hinge on left edge  */
+  .plate-wrap.right .plate-flipper { transform-origin: 100% 50%; }  /* hinge on right edge */
+
+  .plate-face {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+  .plate-bottom { transform: rotateY(180deg); }
+
+  /* Make every inner SVG fill its host element */
+  .element-table > svg,
+  .surface-mark  > svg,
+  .hand          > svg,
+  .plate-face    > svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  /* ======================================================================
+     CHROME / UI
+     ====================================================================== */
+  .progress {
+    position: fixed; inset: 0 0 auto 0;
+    height: 3px;
+    background: rgba(0,0,0,0.05);
+    z-index: 11;
+  }
+  .progress-bar {
+    height: 100%;
+    background: #555;
+    width: 0%;
+    transition: width 80ms linear;
+  }
+
+  .label {
+    position: fixed;
+    top: 22px; left: 0; right: 0;
+    text-align: center;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #999;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  .scroll-hint {
+    position: fixed;
+    bottom: 28px; left: 50%;
+    transform: translateX(-50%);
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #999;
+    pointer-events: none;
+    transition: opacity 0.4s ease-out;
+    z-index: 10;
+  }
+  .scroll-hint.fade { opacity: 0; }
+
+  .caption {
+    position: fixed;
+    bottom: 60px; left: 50%;
+    transform: translateX(-50%);
+    font-size: 15px;
+    color: #555;
+    text-align: center;
+    width: 80%;
+    max-width: 600px;
+    pointer-events: none;
+    z-index: 10;
+  }
+</style>
+</head>
+<body>
+
+<div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+<div class="label">Setting the Table — Scrollytelling Demo</div>
+<div class="caption" id="caption">An empty dining table.</div>
+<div class="scroll-hint" id="scrollHint">Scroll &darr;</div>
+
+<div class="scroll-container">
+  <div class="sticky-stage">
+    <div class="stage">
+
+      <!-- TABLE (top-down) -->
+      <div class="element-table">
+        <svg viewBox="0 0 800 360" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="0" y="0" width="800" height="360" rx="14" fill="#d4b896"/>
+        </svg>
+      </div>
+
+      <!-- SURFACE BENEATH (revealed when plate flips away) -->
+      <div class="surface-mark left" id="markLeft">
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="50" cy="50" r="48" fill="#bb9a6e"/>
+        </svg>
+      </div>
+      <div class="surface-mark right" id="markRight">
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="50" cy="50" r="48" fill="#bb9a6e"/>
+        </svg>
+      </div>
+
+      <!-- HANDS -->
+      <div class="hand" id="handLeft">
+        <svg viewBox="0 0 100 30" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="0" y="0" width="100" height="30" rx="15" fill="#f0c896"/>
+        </svg>
+      </div>
+      <div class="hand" id="handRight">
+        <svg viewBox="0 0 100 30" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="0" y="0" width="100" height="30" rx="15" fill="#f0c896"/>
+        </svg>
+      </div>
+
+      <!-- PLATES (top + bottom faces, flippable) -->
+      <div class="plate-wrap left" id="plateLeft">
+        <div class="plate-flipper" id="flipLeft">
+          <div class="plate-face plate-top">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="50" cy="50" r="48" fill="#ffffff" stroke="#dddddd" stroke-width="1.5"/>
+            </svg>
+          </div>
+          <div class="plate-face plate-bottom">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="50" cy="50" r="48" fill="#ece4d4" stroke="#b8a890" stroke-width="1.5"/>
+              <circle cx="50" cy="50" r="20" fill="none" stroke="#b8a890" stroke-width="1" stroke-dasharray="3 2"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="plate-wrap right" id="plateRight">
+        <div class="plate-flipper" id="flipRight">
+          <div class="plate-face plate-top">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="50" cy="50" r="48" fill="#ffffff" stroke="#dddddd" stroke-width="1.5"/>
+            </svg>
+          </div>
+          <div class="plate-face plate-bottom">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="50" cy="50" r="48" fill="#ece4d4" stroke="#b8a890" stroke-width="1.5"/>
+              <circle cx="50" cy="50" r="20" fill="none" stroke="#b8a890" stroke-width="1" stroke-dasharray="3 2"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const handLeft    = document.getElementById('handLeft');
+  const handRight   = document.getElementById('handRight');
+  const plateLeft   = document.getElementById('plateLeft');
+  const plateRight  = document.getElementById('plateRight');
+  const flipLeft    = document.getElementById('flipLeft');
+  const flipRight   = document.getElementById('flipRight');
+  const markLeft    = document.getElementById('markLeft');
+  const markRight   = document.getElementById('markRight');
+  const progressBar = document.getElementById('progressBar');
+  const caption     = document.getElementById('caption');
+  const scrollHint  = document.getElementById('scrollHint');
+
+  /* ---- Geometry, in % of stage width ---- */
+  const PLATE_WIDTH = 13;
+  const HAND_WIDTH  = 38;
+
+  /* Plates rest centred at 30% (left) and 70% (right) of the stage */
+  const PLATE_LEFT_TARGET  = 30 - PLATE_WIDTH / 2;             // 23.5
+  const PLATE_RIGHT_TARGET = 70 - PLATE_WIDTH / 2;             // 63.5
+
+  /* Plates start fully off-screen */
+  const PLATE_LEFT_START   = -PLATE_WIDTH;                     // -13
+  const PLATE_RIGHT_START  = 100;                              // 100
+
+  /* Hand left-edge positions. Hand right-edge always meets plate's outer edge. */
+  const HAND_LEFT_RETRACT  = -HAND_WIDTH - PLATE_WIDTH;        // -51
+  const HAND_LEFT_EXTEND   = PLATE_LEFT_TARGET - HAND_WIDTH;   // -14.5
+  const HAND_RIGHT_RETRACT = 100 + PLATE_WIDTH;                // 113
+  const HAND_RIGHT_EXTEND  = PLATE_RIGHT_TARGET + PLATE_WIDTH; // 76.5
+
+  /* ---- Easing helpers ---- */
+  const clamp01        = t => Math.max(0, Math.min(1, t));
+  const lerp           = (a, b, t) => a + (b - a) * t;
+  const easeInOutCubic = t => t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3) / 2;
+
+  function update() {
+    const scrollMax = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+    const p = clamp01(window.scrollY / scrollMax);
+    progressBar.style.width = (p * 100) + '%';
+
+    if (p > 0.04) scrollHint.classList.add('fade');
+    else          scrollHint.classList.remove('fade');
+
+    /*
+      Phase map (scroll progress → action):
+        0.00 – 0.10  intro (empty table)
+        0.10 – 0.40  hands + plates slide IN
+        0.40 – 0.50  pause (plates settled)
+        0.50 – 0.70  hands retract (plates stay)
+        0.70 – 0.78  pause (plates resting)
+        0.78 – 1.00  plates flip open
+    */
+    const handsIn  = easeInOutCubic(clamp01((p - 0.10) / 0.30));
+    const handsOut = easeInOutCubic(clamp01((p - 0.50) / 0.20));
+    const flipProg = easeInOutCubic(clamp01((p - 0.78) / 0.22));
+
+    /* Plates follow handsIn, then stay where they were left */
+    plateLeft.style.left  = lerp(PLATE_LEFT_START,  PLATE_LEFT_TARGET,  handsIn) + '%';
+    plateRight.style.left = lerp(PLATE_RIGHT_START, PLATE_RIGHT_TARGET, handsIn) + '%';
+
+    /* Hands extend during handsIn, retract during handsOut */
+    const handInness = clamp01(handsIn - handsOut);
+    handLeft.style.left  = lerp(HAND_LEFT_RETRACT,  HAND_LEFT_EXTEND,  handInness) + '%';
+    handRight.style.left = lerp(HAND_RIGHT_RETRACT, HAND_RIGHT_EXTEND, handInness) + '%';
+
+    /* Plate flip — left flips outward to the left, right flips outward to the right.
+       backface-visibility swaps which face we see at the 90° crossing. */
+    const flipAngle = flipProg * 180;
+    flipLeft.style.transform  = `rotateY(${-flipAngle}deg)`;
+    flipRight.style.transform = `rotateY(${ flipAngle}deg)`;
+
+    /* Surface beneath fades in as the plate clears it */
+    const markOpacity = clamp01((flipProg - 0.15) / 0.45);
+    markLeft.style.opacity  = markOpacity;
+    markRight.style.opacity = markOpacity;
+
+    /* Caption */
+    let text;
+    if      (p < 0.10) text = 'An empty dining table.';
+    else if (p < 0.45) text = 'Hands enter, carrying plates.';
+    else if (p < 0.70) text = 'The plates are placed. Hands withdraw.';
+    else if (p < 0.78) text = 'Two plates rest on the table.';
+    else               text = 'The plates flip — revealing what lies beneath.';
+    if (caption.textContent !== text) caption.textContent = text;
+  }
+
+  /* rAF-throttled scroll handler */
+  let ticking = false;
+  function onScroll() {
+    if (!ticking) {
+      ticking = true;
+      requestAnimationFrame(() => { update(); ticking = false; });
+    }
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', update);
+  update();
+})();
+</script>
+
+</body>
+</html>

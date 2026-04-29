@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Split Portfolio</title>
+<style>
+  :root {
+    --bg-dark: #0a0a0a;
+    --text-dark: #ffffff;
+    --accent-dark: #ff3b30;
+    --bg-light: #f4f4f5;
+    --text-light: #18181b;
+    --accent-light: #007aff;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #000;
+  }
+
+  /* ----------------------------------------------------------
+     SECTIONS — both fixed, full-viewport, clipped by polygon
+     ---------------------------------------------------------- */
+  .section {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    will-change: clip-path, filter;
+    cursor: pointer;
+  }
+
+  .section .inner {
+    width: 100%;
+    min-height: 100vh;
+    padding: 4rem 5vw;
+    position: relative;
+  }
+
+  /* TYPOGRAPHY SITE (top-left triangle) */
+  #typography {
+    background: var(--bg-dark);
+    color: var(--text-dark);
+    z-index: 2;
+    clip-path: polygon(0% 0%, 100% 0%, 100% 0%, 0% 100%, 0% 100%);
+  }
+  #typography .inner { max-width: 1400px; margin: 0 auto; }
+
+  /* PRODUCT SITE (bottom-right triangle) */
+  #product {
+    background: var(--bg-light);
+    color: var(--text-light);
+    z-index: 1;
+    clip-path: polygon(100% 0%, 100% 100%, 0% 100%, 0% 100%, 100% 0%);
+  }
+  #product .inner { max-width: 1400px; margin: 0 auto; }
+
+  /* ----------------------------------------------------------
+     TYPOGRAPHY CONTENT
+     ---------------------------------------------------------- */
+  .nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8vh;
+    font-size: 0.875rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    opacity: 0.6;
+  }
+
+  .hero-type {
+    font-size: clamp(3.5rem, 10vw, 9rem);
+    line-height: 0.9;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    margin-bottom: 1.5rem;
+  }
+
+  .sub-type {
+    font-size: clamp(1rem, 1.5vw, 1.25rem);
+    max-width: 480px;
+    line-height: 1.5;
+    opacity: 0.6;
+    margin-bottom: 6vh;
+  }
+
+  .project-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4rem;
+    margin-top: 6vh;
+  }
+
+  .project-item {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: center;
+  }
+  .project-item:nth-child(even) { direction: rtl; }
+  .project-item:nth-child(even) > * { direction: ltr; }
+
+  .placeholder-block {
+    width: 100%;
+    aspect-ratio: 4/3;
+    background: #1c1c1e;
+    border: 1px solid #2c2c2e;
+    position: relative;
+    overflow: hidden;
+  }
+  .placeholder-block::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent 40%, rgba(255,255,255,0.03) 50%, transparent 60%);
+  }
+
+  .project-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.02em;
+  }
+  .project-desc {
+    font-size: 1rem;
+    line-height: 1.6;
+    opacity: 0.5;
+    max-width: 360px;
+  }
+
+  /* ----------------------------------------------------------
+     PRODUCT CONTENT
+     ---------------------------------------------------------- */
+  .hero-product {
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 300;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    margin-bottom: 2rem;
+    max-width: 600px;
+  }
+  .hero-product strong { font-weight: 600; }
+
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2rem;
+    margin-top: 5vh;
+  }
+
+  .product-card {
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 8px 24px rgba(0,0,0,0.04);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .product-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.08);
+  }
+
+  .product-img {
+    width: 100%;
+    aspect-ratio: 1;
+    background: linear-gradient(135deg, #e5e5e7 0%, #d4d4d8 100%);
+    position: relative;
+  }
+  .product-img::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 60%, rgba(0,0,0,0.03) 100%);
+  }
+
+  .product-info { padding: 1.25rem; }
+  .product-name {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    letter-spacing: -0.01em;
+  }
+  .product-meta {
+    font-size: 0.875rem;
+    color: #71717a;
+  }
+
+  /* ----------------------------------------------------------
+     DIVIDER LINE (SVG overlay)
+     ---------------------------------------------------------- */
+  #divider-svg {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 50;
+  }
+  #divider-line {
+    stroke: #ffffff;
+    stroke-width: 2;
+    filter: drop-shadow(0 0 8px rgba(255,255,255,0.5)) drop-shadow(0 0 2px rgba(255,255,255,0.8));
+    opacity: 0.9;
+  }
+
+  /* ----------------------------------------------------------
+     BACK BUTTON
+     ---------------------------------------------------------- */
+  #back-btn {
+    position: fixed;
+    top: 2rem;
+    right: 2rem;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 200;
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(0.9);
+    transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  #back-btn.visible {
+    opacity: 1;
+    pointer-events: auto;
+    transform: scale(1);
+  }
+  #back-btn:hover { background: rgba(255,255,255,0.15); transform: scale(1.08); }
+  #back-btn:active { transform: scale(0.95); }
+
+  /* ----------------------------------------------------------
+     HINTS (only visible in split state)
+     ---------------------------------------------------------- */
+  .hint {
+    position: absolute;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.25em;
+    pointer-events: none;
+    transition: opacity 0.6s ease;
+  }
+  #typography .hint {
+    top: 2rem;
+    right: 2rem;
+    color: rgba(255,255,255,0.25);
+  }
+  #product .hint {
+    bottom: 2rem;
+    left: 2rem;
+    color: rgba(0,0,0,0.25);
+  }
+
+  /* Hide hints when not in split */
+  body:not([data-state="split"]) .hint { opacity: 0; }
+
+  /* ----------------------------------------------------------
+     RESPONSIVE
+     ---------------------------------------------------------- */
+  @media (max-width: 768px) {
+    .project-item { grid-template-columns: 1fr; gap: 1.5rem; }
+    .project-item:nth-child(even) { direction: ltr; }
+    .inner { padding: 2rem 1.5rem; }
+    .product-grid { grid-template-columns: 1fr 1fr; gap: 1rem; }
+  }
+</style>
+<base target="_blank">
+</head>
+
+<body data-state="split">
+
+  <!-- ==================== TYPOGRAPHY SITE ==================== -->
+  <section id="typography" class="section" aria-label="Typography portfolio">
+    <div class="inner">
+      <div class="nav">
+        <span>Studio</span>
+        <span>Index</span>
+      </div>
+
+      <h1 class="hero-type">Lorem<br>Ipsum</h1>
+      <p class="sub-type">
+        Dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+      </p>
+
+      <div class="project-list">
+        <article class="project-item">
+          <div class="placeholder-block"></div>
+          <div>
+            <h2 class="project-title">Project Unum</h2>
+            <p class="project-desc">
+              Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+            </p>
+          </div>
+        </article>
+        <article class="project-item">
+          <div class="placeholder-block"></div>
+          <div>
+            <h2 class="project-title">Project Duo</h2>
+            <p class="project-desc">
+              Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+            </p>
+          </div>
+        </article>
+        <article class="project-item">
+          <div class="placeholder-block"></div>
+          <div>
+            <h2 class="project-title">Project Tres</h2>
+            <p class="project-desc">
+              Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+            </p>
+          </div>
+        </article>
+      </div>
+
+      <footer style="margin-top: 10vh; padding-bottom: 4vh; font-size: 0.75rem; opacity: 0.3; text-transform: uppercase; letter-spacing: 0.1em;">
+        &copy; 2026 Studio Lorem. All rights reserved.
+      </footer>
+    </div>
+    <div class="hint">Click to explore</div>
+  </section>
+
+  <!-- ==================== PRODUCT SITE ==================== -->
+  <section id="product" class="section" aria-label="Product design portfolio">
+    <div class="inner">
+      <div class="nav" style="color: #71717a; margin-bottom: 6vh;">
+        <span style="font-weight: 600; color: var(--text-light);">Objekt</span>
+        <span>Archive</span>
+      </div>
+
+      <h1 class="hero-product"><strong>Form</strong> follows function, and function follows human need.</h1>
+      <p style="max-width: 520px; line-height: 1.6; color: #52525b; margin-bottom: 2rem;">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam, quis nostrud exercitation.
+      </p>
+
+      <div class="product-grid">
+        <div class="product-card">
+          <div class="product-img"></div>
+          <div class="product-info">
+            <div class="product-name">Ceramic Vase</div>
+            <div class="product-meta">Hand-molded stoneware</div>
+          </div>
+        </div>
+        <div class="product-card">
+          <div class="product-img"></div>
+          <div class="product-info">
+            <div class="product-name">Desk Lamp</div>
+            <div class="product-meta">Matte aluminum, 2025</div>
+          </div>
+        </div>
+        <div class="product-card">
+          <div class="product-img"></div>
+          <div class="product-info">
+            <div class="product-name">Audio Speaker</div>
+            <div class="product-meta">Walnut & brass</div>
+          </div>
+        </div>
+        <div class="product-card">
+          <div class="product-img"></div>
+          <div class="product-info">
+            <div class="product-name">Chair No. 4</div>
+            <div class="product-meta">Bent plywood series</div>
+          </div>
+        </div>
+        <div class="product-card">
+          <div class="product-img"></div>
+          <div class="product-info">
+            <div class="product-name">Glass Carafe</div>
+            <div class="product-meta">Borosilicate, 1.2L</div>
+          </div>
+        </div>
+        <div class="product-card">
+          <div class="product-img"></div>
+          <div class="product-info">
+            <div class="product-name">Wall Clock</div>
+            <div class="product-meta">Silent quartz movement</div>
+          </div>
+        </div>
+      </div>
+
+      <footer style="margin-top: 10vh; padding-bottom: 4vh; font-size: 0.75rem; color: #a1a1aa; text-transform: uppercase; letter-spacing: 0.1em;">
+        &copy; 2026 Objekt Design. All rights reserved.
+      </footer>
+    </div>
+    <div class="hint">Click to explore</div>
+  </section>
+
+  <!-- ==================== DIAGONAL DIVIDER ==================== -->
+  <svg id="divider-svg" preserveAspectRatio="none" viewBox="0 0 100 100">
+    <line id="divider-line" x1="100" y1="0" x2="0" y2="100" vector-effect="non-scaling-stroke"/>
+  </svg>
+
+  <!-- ==================== BACK BUTTON ==================== -->
+  <button id="back-btn" aria-label="Return to split view">
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+      <path d="M3 3l12 12M15 3L3 15"/>
+    </svg>
+  </button>
+
+<script>
+  /* ============================================================
+     STATE & DOM
+     ============================================================ */
+  const typography = document.getElementById('typography');
+  const product    = document.getElementById('product');
+  const dividerLine = document.getElementById('divider-line');
+  const backBtn    = document.getElementById('back-btn');
+  const body       = document.body;
+
+  let state = 'split';      // 'split' | 'typography' | 'product'
+  let isAnimating = false;
+
+  /* ============================================================
+     EASING — ease-in-out-cubic for elegance
+     ============================================================ */
+  const ease = t => t < 0.5
+    ? 4 * t * t * t
+    : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+  /* ============================================================
+     ANIMATION LOOP
+     ============================================================ */
+  function animate({ from, to, duration, onUpdate, onComplete }) {
+    const start = performance.now();
+    function frame(now) {
+      const p = Math.min((now - start) / duration, 1);
+      const e = ease(p);
+      onUpdate(from + (to - from) * e);
+      if (p < 1) requestAnimationFrame(frame);
+      else if (onComplete) onComplete();
+    }
+    requestAnimationFrame(frame);
+  }
+
+  /* ============================================================
+     CLIP-PATH POLYGONS (5 points each for smooth interpolation)
+     ============================================================ */
+
+  // Typography expanding: t 0→1
+  const typePoly = t =>
+    `polygon(0% 0%, 100% 0%, 100% ${t*100}%, ${t*100}% 100%, 0% 100%)`;
+
+  // Product shrinking (while typography expands): t 0→1
+  const prodShrinkPoly = t =>
+    `polygon(100% ${t*100}%, 100% 100%, ${t*100}% 100%, ${t*100}% 100%, 100% ${t*100}%)`;
+
+  // Product expanding: s 0→1
+  const prodPoly = s =>
+    `polygon(100% 0%, 100% 100%, 0% 100%, 0% ${(1-s)*100}%, ${(1-s)*100}% 0%)`;
+
+  // Typography shrinking (while product expands): s 0→1
+  const typeShrinkPoly = s =>
+    `polygon(0% 0%, ${(1-s)*100}% 0%, 0% ${(1-s)*100}%, 0% ${(1-s)*100}%, 0% 0%)`;
+
+  /* ============================================================
+     TRANSITIONS
+     ============================================================ */
+
+  function enterTypography() {
+    if (isAnimating || state === 'typography') return;
+    isAnimating = true;
+    state = 'typography';
+    body.setAttribute('data-state', 'typography');
+
+    // Stack expanding side above
+    typography.style.zIndex = 10;
+    product.style.zIndex    = 5;
+    typography.style.pointerEvents = 'none';
+    product.style.pointerEvents    = 'none';
+
+    animate({
+      from: 0,
+      to: 1,
+      duration: 950,
+      onUpdate(t) {
+        // Clip paths
+        typography.style.clipPath = typePoly(t);
+        product.style.clipPath    = prodShrinkPoly(t);
+
+        // Blur the shrinking side for depth
+        product.style.filter = `blur(${t * 6}px) brightness(${1 - t * 0.3})`;
+
+        // Divider line tracks the moving corner
+        // Start: (100,0) → (0,100)   End: (100,100) → (100,100)
+        dividerLine.setAttribute('x1', 100);
+        dividerLine.setAttribute('y1', t * 100);
+        dividerLine.setAttribute('x2', t * 100);
+        dividerLine.setAttribute('y2', 100);
+      },
+      onComplete() {
+        isAnimating = false;
+        typography.style.pointerEvents = 'auto';
+        typography.style.overflow    = 'auto';
+        product.style.overflow       = 'hidden';
+        product.style.filter         = 'none';
+        backBtn.classList.add('visible');
+      }
+    });
+  }
+
+  function enterProduct() {
+    if (isAnimating || state === 'product') return;
+    isAnimating = true;
+    state = 'product';
+    body.setAttribute('data-state', 'product');
+
+    product.style.zIndex    = 10;
+    typography.style.zIndex = 5;
+    typography.style.pointerEvents = 'none';
+    product.style.pointerEvents    = 'none';
+
+    animate({
+      from: 0,
+      to: 1,
+      duration: 950,
+      onUpdate(s) {
+        product.style.clipPath    = prodPoly(s);
+        typography.style.clipPath = typeShrinkPoly(s);
+
+        typography.style.filter = `blur(${s * 6}px) brightness(${1 - s * 0.3})`;
+
+        // Divider tracks toward top-left (0,0)
+        dividerLine.setAttribute('x1', (1 - s) * 100);
+        dividerLine.setAttribute('y1', 0);
+        dividerLine.setAttribute('x2', 0);
+        dividerLine.setAttribute('y2', (1 - s) * 100);
+      },
+      onComplete() {
+        isAnimating = false;
+        product.style.pointerEvents = 'auto';
+        product.style.overflow    = 'auto';
+        typography.style.overflow = 'hidden';
+        typography.style.filter   = 'none';
+        backBtn.classList.add('visible');
+      }
+    });
+  }
+
+  function enterSplit() {
+    if (isAnimating || state === 'split') return;
+    isAnimating = true;
+    const fromState = state;
+    state = 'split';
+    body.setAttribute('data-state', 'split');
+
+    backBtn.classList.remove('visible');
+    typography.style.overflow = 'hidden';
+    product.style.overflow    = 'hidden';
+    typography.style.pointerEvents = 'none';
+    product.style.pointerEvents    = 'none';
+
+    animate({
+      from: 1,
+      to: 0,
+      duration: 900,
+      onUpdate(v) {
+        if (fromState === 'typography') {
+          typography.style.clipPath = typePoly(v);
+          product.style.clipPath    = prodShrinkPoly(v);
+          product.style.filter      = `blur(${v * 6}px) brightness(${1 - v * 0.3})`;
+
+          dividerLine.setAttribute('x1', 100);
+          dividerLine.setAttribute('y1', v * 100);
+          dividerLine.setAttribute('x2', v * 100);
+          dividerLine.setAttribute('y2', 100);
+        } else {
+          product.style.clipPath    = prodPoly(v);
+          typography.style.clipPath = typeShrinkPoly(v);
+          typography.style.filter   = `blur(${v * 6}px) brightness(${1 - v * 0.3})`;
+
+          dividerLine.setAttribute('x1', (1 - v) * 100);
+          dividerLine.setAttribute('y1', 0);
+          dividerLine.setAttribute('x2', 0);
+          dividerLine.setAttribute('y2', (1 - v) * 100);
+        }
+      },
+      onComplete() {
+        isAnimating = false;
+        typography.style.pointerEvents = 'auto';
+        product.style.pointerEvents    = 'auto';
+        typography.style.zIndex = 2;
+        product.style.zIndex    = 1;
+
+        // Reset to exact split polygons to prevent subpixel drift
+        typography.style.clipPath = 'polygon(0% 0%, 100% 0%, 100% 0%, 0% 100%, 0% 100%)';
+        product.style.clipPath    = 'polygon(100% 0%, 100% 100%, 0% 100%, 0% 100%, 100% 0%)';
+        typography.style.filter   = 'none';
+        product.style.filter      = 'none';
+
+        dividerLine.setAttribute('x1', 100);
+        dividerLine.setAttribute('y1', 0);
+        dividerLine.setAttribute('x2', 0);
+        dividerLine.setAttribute('y2', 100);
+      }
+    });
+  }
+
+  /* ============================================================
+     EVENT LISTENERS
+     ============================================================ */
+  typography.addEventListener('click', () => { if (state === 'split') enterTypography(); });
+  product.addEventListener('click',    () => { if (state === 'split') enterProduct(); });
+  backBtn.addEventListener('click',    (e) => { e.stopPropagation(); enterSplit(); });
+
+  // Keyboard accessibility
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && state !== 'split') enterSplit();
+  });
+</script>
+</body>
+</html>
