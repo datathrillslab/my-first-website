@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IUCN Red List Dataviz</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0b0f19;
+            color: #e2e8f0;
+            margin: 0;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1 {
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #38bdf8, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        p.subtitle {
+            font-weight: 300;
+            color: #94a3b8;
+            margin-bottom: 40px;
+            max-width: 600px;
+            text-align: center;
+            line-height: 1.5;
+        }
+        #viz-container {
+            width: 100%;
+            max-width: 1400px;
+            background: #111827;
+            border: 1px solid #1e293b;
+            border-radius: 12px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            box-sizing: border-box;
+            overflow: hidden;
+            position: relative;
+        }
+        .tooltip {
+            position: absolute;
+            background: rgba(15, 23, 42, 0.95);
+            color: #f1f5f9;
+            padding: 12px 16px;
+            border-radius: 8px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s, transform 0.1s;
+            font-size: 13px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            z-index: 10;
+            border: 1px solid #334155;
+            backdrop-filter: blur(4px);
+            min-width: 200px;
+        }
+        .tooltip div {
+            margin-bottom: 4px;
+        }
+        .tooltip span.label {
+            font-weight: 500;
+            color: #38bdf8;
+            display: inline-block;
+            width: 60px;
+        }
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.2rem;
+            color: #38bdf8;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; }
+            100% { opacity: 0.5; }
+        }
+        .nav-back {
+            position: absolute;
+            top: 40px;
+            left: 40px;
+            color: #94a3b8;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        .nav-back:hover {
+            color: #38bdf8;
+        }
+    </style>
+</head>
+<body>
+    <a href="./week8.html" class="nav-back">&larr; Back to Week 8</a>
+    <h1>IUCN Species Explorer</h1>
+    <p class="subtitle">A visual representation of 23,694 species from the IUCN Red List. Hover over shapes to reveal details about their systems, realms, habitats, and threats.</p>
+    
+    <div id="viz-container">
+        <div id="loading" class="loading">Processing Data...</div>
+    </div>
+    <div id="tooltip" class="tooltip"></div>
+
+    <script>
+        const container = document.getElementById('viz-container');
+        const containerWidth = container.clientWidth - 40; // accounting for padding
+        const cellSize = 22;
+        const cols = Math.floor(containerWidth / cellSize);
+
+        d3.csv("./iucn_final_table.csv").then(data => {
+            document.getElementById('loading').style.display = 'none';
+
+            // Process data
+            const mappedData = data.map(d => {
+                let system = [], realm = [], fao = [], habitat = [], threat = [], use = [];
+                for (let key in d) {
+                    if (d[key] === 'YES') {
+                        if (key.startsWith('system_')) system.push(key.replace('system_', ''));
+                        else if (key.startsWith('realm_')) realm.push(key.replace('realm_', ''));
+                        else if (key.startsWith('fao_')) fao.push(key.replace('fao_', ''));
+                        else if (key.startsWith('habitat_')) habitat.push(key.replace('habitat_', ''));
+                        else if (key.startsWith('threat_')) threat.push(key.replace('threat_', ''));
+                        else if (key.startsWith('use_')) use.push(key.replace('use_', ''));
+                    }
+                }
+                return { ...d, system, realm, fao, habitat, threat, use, name: d.scientificName };
+            });
+
+            const rowsCount = Math.ceil(mappedData.length / cols);
+            const height = rowsCount * cellSize;
+
+            const svg = d3.select("#viz-container")
+                .append("svg")
+                .attr("width", containerWidth)
+                .attr("height", height);
+
+            const tooltip = d3.select("#tooltip");
+            const colorScale = d3.scaleOrdinal(d3.schemeTableau10);
+
+            const outerShapes = {
+                'neotropical': d3.symbolCircle,
+                'afrotropical': d3.symbolSquare,
+                'indomalayan': d3.symbolDiamond,
+                'palearctic': d3.symbolCross,
+                'australasian': d3.symbolTriangle,
+                'nearctic': d3.symbolStar,
+                'oceanian': d3.symbolWye,
+                'antarctic': d3.symbolCircle
+            };
+
+            const innerShapes = {
+                'terrestrial': d3.symbolCircle,
+                'marine': d3.symbolSquare,
+                'freshwater_inland_waters': d3.symbolTriangle
+            };
+
+            const g = svg.selectAll("g")
+                .data(mappedData)
+                .enter()
+                .append("g")
+                .attr("transform", (d, i) => {
+                    const x = (i % cols) * cellSize + cellSize / 2;
+                    const y = Math.floor(i / cols) * cellSize + cellSize / 2;
+                    return `translate(${x},${y})`;
+                })
+                .on("mouseover", function(event, d) {
+                    tooltip.style("opacity", 1)
+                        .html(`
+                            <div style="font-weight:700; color:#fff; margin-bottom:8px; font-size:14px; border-bottom:1px solid #334155; padding-bottom:4px;">${d.name}</div>
+                            <div><span class="label">System:</span> ${d.system.join(", ") || "None"}</div>
+                            <div><span class="label">Realm:</span> ${d.realm.join(", ") || "None"}</div>
+                            <div><span class="label">FAO:</span> ${d.fao.join(", ") || "None"}</div>
+                            <div><span class="label">Habitat:</span> ${d.habitat.join(", ") || "None"}</div>
+                            <div><span class="label">Threat:</span> ${d.threat.join(", ") || "None"}</div>
+                            <div><span class="label">Use:</span> ${d.use.join(", ") || "None"}</div>
+                        `)
+                        .style("left", (event.pageX + 15) + "px")
+                        .style("top", (event.pageY - 15) + "px");
+                    
+                    d3.select(this).select(".outer").attr("stroke", "#38bdf8").attr("stroke-width", 2);
+                    d3.select(this).raise();
+                })
+                .on("mousemove", function(event) {
+                    tooltip.style("left", (event.pageX + 15) + "px")
+                           .style("top", (event.pageY - 15) + "px");
+                })
+                .on("mouseout", function(event, d) {
+                    tooltip.style("opacity", 0);
+                    d3.select(this).select(".outer").attr("stroke", "#475569").attr("stroke-width", 1);
+                });
+
+            // Outer shape (Realm)
+            g.append("path")
+                .attr("class", "outer")
+                .attr("d", d => {
+                    const r = d.realm[0];
+                    const symbolType = outerShapes[r] || d3.symbolCircle;
+                    return d3.symbol().type(symbolType).size(250)();
+                })
+                .attr("fill", "none")
+                .attr("stroke", "#475569")
+                .attr("stroke-width", 1)
+                .attr("stroke-dasharray", d => d.realm[0] === 'antarctic' ? "2,2" : "none");
+
+            // Inner shape (System)
+            g.append("path")
+                .attr("class", "inner")
+                .attr("d", d => {
+                    const s = d.system[0];
+                    const symbolType = innerShapes[s] || d3.symbolCircle;
+                    return d3.symbol().type(symbolType).size(100)();
+                })
+                .attr("fill", d => d.habitat[0] ? colorScale(d.habitat[0]) : "#64748b")
+                .attr("opacity", d => {
+                    const f = d.fao[0];
+                    switch(f) {
+                        case 'pacific': return 0.2;
+                        case 'indian': return 0.4;
+                        case 'atlantic': return 0.6;
+                        case 'mediterranean_and_black_sea': return 0.8;
+                        case 'arctic_sea': return 1.0;
+                        default: return 0.7;
+                    }
+                });
+
+            // Text (Threat)
+            g.append("text")
+                .text(d => d.threat[0] || "")
+                .attr("text-anchor", "middle")
+                .attr("dy", "0.35em")
+                .attr("font-size", "7px")
+                .attr("fill", "#ffffff")
+                .attr("font-weight", "600")
+                .style("pointer-events", "none");
+        });
+    </script>
+</body>
+</html>

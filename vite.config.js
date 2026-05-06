@@ -21,6 +21,7 @@
             seb01: resolve(__dirname, 'seb_01.html'),
             stef01: resolve(__dirname, 'stef_01.html'),
             ferrisWheel: resolve(__dirname, 'ferris-wheel.html'),
+            enaDemo: resolve(__dirname, 'ena-demo.html'),
         },
        },
      },
