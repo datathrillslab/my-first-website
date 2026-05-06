@@ -44,6 +44,146 @@ img {
       margin: 1rem 0;
     }
 
+body.figma-guide-page {
+  max-width: 860px;
+  background: #ffffff;
+  color: #222222;
+    }
+
+.figma-guide-page nav {
+      flex-wrap: wrap;
+      align-items: center;
+  gap: 1rem;
+  border-bottom-color: #dddddd;
+    }
+
+.figma-guide-page nav a {
+  color: #0055aa;
+    }
+
+.figma-guide {
+      display: grid;
+  gap: 2rem;
+      padding-bottom: 3rem;
+    }
+
+.figma-hero {
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #dddddd;
+    }
+
+.figma-eyebrow,
+.figma-path-label {
+      text-transform: uppercase;
+  letter-spacing: 0.08em;
+      font-size: 0.8rem;
+  color: #666666;
+      margin-bottom: 0.5rem;
+    }
+
+.figma-intro {
+      max-width: 62ch;
+  font-size: 1rem;
+    }
+
+.figma-summary-grid,
+.figma-columns,
+.figma-tip-list {
+      display: grid;
+      gap: 1rem;
+    }
+
+.figma-summary-grid,
+.figma-tip-list {
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  margin-top: 1rem;
+    }
+
+.figma-columns {
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      margin-top: 1rem;
+    }
+
+.figma-summary-card,
+.figma-card,
+.figma-tip,
+.figma-section {
+  background: transparent;
+  border: 1px solid #e2e2e2;
+  border-radius: 8px;
+  padding: 1.25rem;
+  box-shadow: none;
+    }
+
+.figma-path-section {
+  padding: 1.25rem;
+    }
+
+.figma-path-heading p,
+.figma-path-heading h2 {
+      margin-bottom: 0.5rem;
+    }
+
+.figma-guide h2,
+.figma-guide h3 {
+  color: #222222;
+    }
+
+.figma-guide ol,
+.figma-guide ul {
+      padding-left: 1.25rem;
+      margin: 0.75rem 0 0;
+    }
+
+.figma-guide li {
+      margin-bottom: 0.75rem;
+    }
+
+.figma-guide pre {
+      overflow-x: auto;
+      padding: 1rem;
+      margin: 1rem 0;
+  border-radius: 6px;
+  border: 1px solid #dddddd;
+  background: #f7f7f7;
+  color: #222222;
+    }
+
+.figma-guide code {
+      font-family: 'Courier New', monospace;
+      font-size: 0.95em;
+    }
+
+.figma-guide p code,
+.figma-guide li code {
+  background: #f2f2f2;
+  border-radius: 4px;
+      padding: 0.1rem 0.35rem;
+  color: #333333;
+    }
+
+.figma-sources p:last-child,
+.figma-summary-card p:last-child,
+.figma-card p:last-child,
+.figma-tip p:last-child {
+      margin-bottom: 0;
+    }
+
+@media (max-width: 720px) {
+      body.figma-guide-page {
+        padding: 1.25rem;
+      }
+
+      .figma-hero,
+      .figma-path-section,
+      .figma-section,
+      .figma-card,
+      .figma-tip,
+      .figma-summary-card {
+        padding: 1rem;
+      }
+    }
+
 .pretext-demo {
       position: relative;
       width: 100%;

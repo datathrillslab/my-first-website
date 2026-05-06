@@ -9,6 +9,7 @@
            main: resolve(__dirname, 'index.html'),
            about: resolve(__dirname, 'about.html'),
            projects: resolve(__dirname, 'projects.html'),
+           figmaVsCode: resolve(__dirname, 'figma-vscode.html'),
           pretextDemo: resolve(__dirname, 'pretext-demo.html'),
           pretextDemoV2: resolve(__dirname, 'pretext-demo-v2.html'),
           catDemo: resolve(__dirname, 'cat-demo.html'),

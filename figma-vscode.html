@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Figma + VS Code Guide</title>
+  <script type="module" src="/src/main.js"></script>
+</head>
+<body class="figma-guide-page">
+  <nav>
+    <a href="./">Home</a>
+    <a href="#common-setup">Common Setup</a>
+    <a href="#path-a">Browser Path</a>
+    <a href="#path-b">Desktop Path</a>
+    <a href="#tips">Tips</a>
+  </nav>
+
+  <main class="figma-guide">
+    <section class="figma-hero">
+      <p class="figma-eyebrow">Quick Start Guide</p>
+      <h1>Figma + VS Code with AI</h1>
+      <p class="figma-intro">
+        Use this page as a compact guide for connecting Figma to VS Code so GitHub Copilot can read
+        design structure and help build responsive web pages from your frames.
+      </p>
+      <div class="figma-summary-grid" aria-label="Available setup paths">
+        <article class="figma-summary-card">
+          <h2>Path A</h2>
+          <p><strong>Figma in the browser</strong></p>
+          <p>Use the remote MCP server. No desktop app required.</p>
+        </article>
+        <article class="figma-summary-card">
+          <h2>Path B</h2>
+          <p><strong>Figma desktop app</strong></p>
+          <p>Use the desktop MCP server and work from the current selection.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="common-setup" class="figma-section">
+      <h2>Common setup</h2>
+      <ol>
+        <li>
+          Verify your Figma Education plan with your <code>@uniri.hr</code> email and make sure your
+          team shows the <em>Education users only</em> banner.
+        </li>
+        <li>
+          In VS Code, activate Copilot Student through GitHub Education and install both GitHub
+          Copilot extensions: <strong>GitHub Copilot</strong> and <strong>GitHub Copilot Chat</strong>.
+        </li>
+      </ol>
+    </section>
+
+    <section id="path-a" class="figma-section figma-path-section">
+      <div class="figma-path-heading">
+        <p class="figma-path-label">Path A</p>
+        <h2>Figma in the browser</h2>
+        <p>Use the remote MCP server when you want the simplest setup and are copying links from the browser.</p>
+      </div>
+
+      <div class="figma-columns">
+        <article class="figma-card">
+          <h3>Set it up</h3>
+          <ol>
+            <li>Press <code>Ctrl+Shift+P</code> in VS Code and run <strong>MCP: Open User Configuration</strong>.</li>
+            <li>Paste this into <code>mcp.json</code> and save:</li>
+          </ol>
+          <pre><code>{
+  "inputs": [],
+  "servers": {
+    "figma": {
+      "url": "https://mcp.figma.com/mcp",
+      "type": "http"
+    }
+  }
+}</code></pre>
+          <ol start="3">
+            <li>Click <strong>Start</strong> above the <code>figma</code> server entry.</li>
+            <li>Allow access in the browser window that opens.</li>
+          </ol>
+        </article>
+
+        <article class="figma-card">
+          <h3>Sanity check</h3>
+          <p>
+            Open Copilot Chat with <code>Ctrl+Alt+I</code>, switch to <strong>Agent mode</strong>, and type
+            <code>#get_design_context</code>. If it autocompletes, the connection is working.
+          </p>
+
+          <h3>The loop</h3>
+          <ol>
+            <li>In Figma, right-click the frame you want to build and choose <strong>Copy link to selection</strong>.</li>
+            <li>Prompt Copilot: <em>Get the design context for this frame and build it as a responsive HTML/CSS page in this folder: &lt;paste link&gt;</em></li>
+            <li>After design updates, copy the link again and ask Copilot to re-fetch the context and update the page.</li>
+            <li>Commit and push from VS Code when the page looks right.</li>
+          </ol>
+        </article>
+      </div>
+    </section>
+
+    <section id="path-b" class="figma-section figma-path-section">
+      <div class="figma-path-heading">
+        <p class="figma-path-label">Path B</p>
+        <h2>Figma desktop app</h2>
+        <p>Use the local MCP server when you prefer selecting a frame directly in the desktop app.</p>
+      </div>
+
+      <div class="figma-columns">
+        <article class="figma-card">
+          <h3>Set it up</h3>
+          <ol>
+            <li>Install the latest Figma desktop app and open a design file.</li>
+            <li>Switch to <strong>Dev Mode</strong> with the toolbar toggle or <code>Shift+D</code>.</li>
+            <li>In the inspect panel, enable the desktop MCP server. Figma should show <code>http://127.0.0.1:3845/mcp</code>.</li>
+            <li>In VS Code, run <strong>MCP: Add Server</strong>, choose <strong>HTTP</strong>, paste that address, and use <code>figma-desktop</code> as the server ID.</li>
+          </ol>
+        </article>
+
+        <article class="figma-card">
+          <h3>Sanity check</h3>
+          <p>
+            In Copilot Chat, switch to <strong>Agent mode</strong> and test <code>#get_design_context</code>.
+            If it does not autocomplete, restart both Figma desktop and VS Code.
+          </p>
+
+          <h3>The loop</h3>
+          <ol>
+            <li>Select the frame you want to build inside the Figma desktop app.</li>
+            <li>Prompt Copilot: <em>Get the design context for my current selection and build it as a responsive HTML/CSS page in this folder.</em></li>
+            <li>After edits in Figma, re-select the frame and ask Copilot to re-fetch the context while keeping the existing structure.</li>
+            <li>You can still use the link-based workflow from Path A if that fits better.</li>
+          </ol>
+        </article>
+      </div>
+    </section>
+
+    <section id="tips" class="figma-section">
+      <h2>Tips for cleaner results</h2>
+      <div class="figma-tip-list">
+        <article class="figma-tip">
+          <h3>Name layers clearly</h3>
+          <p>Use names like <code>HeroSection</code> and <code>CTA-Button</code>. Vague names like <code>Group 47</code> produce messy code.</p>
+        </article>
+        <article class="figma-tip">
+          <h3>Use structure in Figma</h3>
+          <p>Auto Layout, components, and variables make MCP output much more useful because the design has real semantics.</p>
+        </article>
+        <article class="figma-tip">
+          <h3>Stay in Agent mode</h3>
+          <p>Ask mode will not call the MCP tools or write files, so use Agent mode for this workflow.</p>
+        </article>
+        <article class="figma-tip">
+          <h3>Keep the scope small</h3>
+          <p>Build one screen at a time instead of selecting a huge canvas with many unrelated frames.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="figma-section figma-sources">
+      <h2>Source links</h2>
+      <p><a href="https://developers.figma.com/docs/figma-mcp-server/remote-server-installation/#vs-code" target="_blank" rel="noreferrer">Remote server installation</a></p>
+      <p><a href="https://developers.figma.com/docs/figma-mcp-server/local-server-installation/" target="_blank" rel="noreferrer">Desktop server installation</a></p>
+    </section>
+  </main>
+</body>
+</html>
