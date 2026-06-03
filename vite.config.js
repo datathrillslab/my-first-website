@@ -23,6 +23,7 @@
             stef01: resolve(__dirname, 'stef_01.html'),
             ferrisWheel: resolve(__dirname, 'ferris-wheel.html'),
             enaDemo: resolve(__dirname, 'ena-demo.html'),
+            demo1: resolve(__dirname, 'demo1/index.html'),
         },
        },
      },

@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node -e ' *)",
+      "PowerShell(npm run preview -- --port 4173)",
+      "Bash(node _inspect.js)",
+      "Bash(node _inspect.cjs)",
+      "Read(//c/Users/admin/AppData/Local/Temp/claude/demo1-verify/**)",
+      "Bash(node _inspect2.cjs)",
+      "Read(//c/Users/admin/.claude/projects/c--Users-admin-Code-my-first-website/92628ceb-9c0c-4722-b7e4-a0a6de046d89/subagents/workflows/wf_dbb52f19-aee/**)",
+      "Bash(grep -nE \"height: 100vh;|width: 100vw;|#viz-container \\\\{|svg \\\\{ display|\\\\.append\\\\\\('svg'\\\\\\)|\\\\.attr\\\\\\('width', width\\\\\\)|\\\\.attr\\\\\\('height', height\\\\\\)|window.addEventListener\\\\\\('resize'|svg\\\\.attr\\\\\\('width', w\\\\\\)|id=\\\\\"controls\\\\\"|btn-clear\\\\\">Clear|item\\\\.addEventListener\\\\\\('click'|legendList\\\\.appendChild|function clearSelection|infoPanel\\\\.classList\\\\.remove\\\\\\('visible'\\\\\\)|\\\\.text\\\\\\(d => d\\\\.label\\\\\\);|cursor: pointer.*proxy|d3\\\\.select\\\\\\('d3js'|d3\\\\.v7\\\\.min\\\\.js\" index.html)"
+    ]
+  }
+}
