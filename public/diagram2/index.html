@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="hr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Erasmus mobilnost osoblja — Rijeka</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <a href="../demo1/" style="position:fixed;top:10px;left:10px;z-index:99999;font:600 13px system-ui,sans-serif;background:rgba(255,255,255,.92);color:#222;padding:6px 11px;border-radius:8px;text-decoration:none;box-shadow:0 1px 5px rgba(0,0,0,.25)">&larr; Menu</a>
+    <div class="page">
+      <header class="hero">
+        <div>
+          <h1>Riječki Erasmus<br />kompas osoblja</h1>
+          <p class="subtitle">
+            Sve akademske godine.<br />
+            Ishodište je Rijeka (45.3271 N, 14.4422 E).<br />
+            Os X prikazuje razliku u geografskoj dužini,<br />
+            os Y razliku u geografskoj širini.
+          </p>
+        </div>
+      </header>
+
+      <main class="board">
+        <section class="panel panel--chart">
+          <div class="chart-wrap">
+            <svg id="chart" role="img" aria-label="Coordinate chart"></svg>
+            <div id="tooltip" class="tooltip" role="status" aria-live="polite"></div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>

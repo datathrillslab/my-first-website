@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Erasmus Staff Mobility — Interactive Viz</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Year controls — centered at top -->
+  <div id="controls">
+    <div id="years-and-track">
+      <div id="years"></div>
+      <div id="time-track" aria-hidden="true">
+        <div id="time-cursor"></div>
+      </div>
+    </div>
+    <div id="playbar">
+      <button id="play">Play</button>
+      <button id="back">Reset</button>
+    </div>
+  </div>
+
+  <div id="viz"></div>
+
+  <!-- Sidebar — hidden by default, opened via info dot -->
+  <div id="sidebar" class="sidebar collapsed">
+    <div class="sidebar-content">
+      <h2>Mobility Dashboard</h2>
+
+      <div class="sidebar-section">
+        <h3>Home Faculties</h3>
+        <div id="legend-list" class="legend-list"></div>
+      </div>
+
+      <div class="sidebar-section">
+        <h3>Visits per Person</h3>
+        <div class="search-container">
+          <input type="text" id="person-search" placeholder="Search visitors..." class="search-input" />
+        </div>
+        <div id="person-list" class="stats-list"></div>
+      </div>
+
+      <div class="sidebar-section">
+        <h3>City Popularity</h3>
+        <div class="search-container">
+          <input type="text" id="city-search" placeholder="Search cities..." class="search-input" />
+        </div>
+        <div id="city-list" class="stats-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Info dot — opens the sidebar -->
+  <button id="info-dot" aria-label="Toggle Dashboard">
+    <span id="info-dot-icon">?</span>
+  </button>
+
+  <!-- Info panel — slides up on tap -->
+  <div id="info-panel" class="info-panel hidden">
+    <div class="panel-handle"></div>
+    <div id="info-panel-content"></div>
+  </div>
+
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="viz.js?v=14"></script>
+</body>
+</html>

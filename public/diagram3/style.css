@@ -1,0 +1,331 @@
+html,body{height:100%;margin:0;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;overflow:hidden;background:#050a08;color:#e8e8e8}
+body{position:relative}
+
+/* Controls — centered column at top */
+#controls{
+  position:absolute;
+  top:0;
+  left:50%;
+  transform:translateX(-50%);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:14px 20px 10px;
+  z-index:2;
+  pointer-events:none;
+}
+#controls > *{ pointer-events:auto; }
+
+/* Wrapper fixes the width so the track below can span it cleanly */
+#years-and-track{
+  width:max-content;
+  display:flex;
+  flex-direction:column;
+}
+
+#years{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:6px;
+}
+
+/* Time track — thin bar below year buttons */
+#time-track{
+  width:100%;
+  height:2px;
+  background:rgba(58,125,82,0.10);
+  border-radius:1px;
+  position:relative;
+  margin-top:8px;
+  pointer-events:none;
+  overflow:visible;
+}
+/* The always-moving shimmer — sweeps left to right forever */
+#time-track::after{
+  content:'';
+  position:absolute;
+  top:-1px;
+  left:0;right:0;
+  height:4px;
+  border-radius:2px;
+  background:linear-gradient(90deg,transparent 0%,rgba(122,200,140,0.38) 50%,transparent 100%);
+  background-size:35% 100%;
+  background-repeat:no-repeat;
+  animation:time-sweep 3.5s linear infinite;
+}
+@keyframes time-sweep{
+  0%  {background-position:-35% center}
+  100%{background-position:135% center}
+}
+/* Current year cursor — glowing dot that transitions smoothly between years */
+#time-cursor{
+  position:absolute;
+  top:50%;
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:radial-gradient(circle,#9ae8b8 0%,#4a9e70 65%);
+  transform:translate(-50%,-50%);
+  /* left is driven entirely by JS — no CSS transition */
+  animation:cursor-glow 2.4s ease-in-out infinite;
+}
+@keyframes cursor-glow{
+  0%,100%{box-shadow:0 0 8px 2px rgba(92,168,122,0.65),0 0 16px rgba(92,168,122,0.25)}
+  50%    {box-shadow:0 0 13px 3px rgba(122,200,140,0.9), 0 0 26px rgba(92,168,122,0.45)}
+}
+
+#years button{
+  padding:6px 10px;
+  border:none;
+  background:transparent;
+  color:#9ac8a8;
+  cursor:pointer;
+  font-weight:500;
+  font-size:14px;
+  letter-spacing:0.4px;
+  opacity:0.18;
+  transition:opacity 0.9s ease, color 0.9s ease, text-shadow 0.9s ease, font-weight 0.3s ease;
+}
+#years button.past{
+  opacity:0.45;
+  color:#8aab90;
+}
+#years button.active{
+  opacity:1;
+  color:#d4f0df;
+  font-weight:600;
+  text-shadow:0 0 14px rgba(92,168,122,0.5);
+}
+
+#playbar{
+  margin-top:8px;
+  display:flex;
+  gap:8px;
+  justify-content:center;
+}
+#playbar button{
+  padding:7px 18px;
+  background:#0c120e;
+  color:#8aab90;
+  border:1px solid #1e2e24;
+  border-radius:6px;
+  cursor:pointer;
+  font-weight:600;
+}
+
+/* Visualization canvas */
+#viz{width:100%;height:100vh}
+#viz svg{cursor:grab}
+svg{width:100%;height:100%}
+
+/* Botanical visualization elements */
+.city-group{cursor:pointer}
+.person-bud{cursor:pointer}
+.city-petals-group{filter:drop-shadow(0 0 6px rgba(250,180,70,0.45))}
+.city-petal{opacity:0.85}
+.city-center{fill:#ffe8c8;opacity:0.9}
+.seed-shape{opacity:0.9;filter:drop-shadow(0 0 3px rgba(100,200,140,0.6))}
+.visit-vine{fill:none;stroke-width:1;opacity:0.22;pointer-events:none}
+
+/* Info dot — bottom-right, opens sidebar */
+#info-dot{
+  position:fixed;
+  bottom:28px;
+  right:28px;
+  width:48px;
+  height:48px;
+  border-radius:50%;
+  background:rgba(5,18,10,0.9);
+  border:1px solid #2a4a38;
+  color:#7ecf9e;
+  font-size:20px;
+  font-family:'Segoe UI',sans-serif;
+  cursor:pointer;
+  z-index:20;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+  box-shadow:0 0 18px rgba(46,125,82,0.18);
+  transition:border-color 0.3s,box-shadow 0.3s,background 0.3s;
+  line-height:1;
+}
+#info-dot.open{
+  background:rgba(30,60,42,0.92);
+  border-color:#3a7d52;
+  box-shadow:0 0 26px rgba(58,125,82,0.38);
+  font-size:22px;
+}
+
+/* Info panel — slides up from bottom on tap */
+.info-panel{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  background:rgba(4,14,8,0.97);
+  border-top:1px solid #1a3a28;
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  padding:14px 32px 22px;
+  z-index:50;
+  transform:translateY(100%);
+  transition:transform 0.35s cubic-bezier(0.16,1,0.3,1);
+  box-shadow:0 -4px 30px rgba(0,0,0,0.5);
+}
+.info-panel.visible{transform:translateY(0)}
+.info-panel.hidden{display:none}
+
+.panel-handle{
+  width:36px;height:3px;
+  background:#1e3d2a;
+  border-radius:2px;
+  margin:0 auto 12px;
+}
+#info-panel-content{font-size:15px;line-height:1.6;color:#d8eddf}
+#info-panel-content strong{font-size:17px;color:#ffffff;font-weight:700}
+.info-divider{color:#2d5a3d;margin:0 10px}
+.info-stat{color:#7ecf9e;font-size:14px}
+.info-faculty{color:#8aab90;font-size:14px}
+
+/* Sidebar — slides in from right, hidden by default */
+.sidebar{
+  position:absolute;
+  top:0;right:0;bottom:0;
+  width:380px;
+  background:rgba(8,18,12,0.88);
+  border-left:1px solid #1a2e20;
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  z-index:10;
+  box-shadow:-5px 0 25px rgba(0,0,0,0.5);
+  transition:transform 0.45s cubic-bezier(0.16,1,0.3,1);
+  box-sizing:border-box;
+}
+.sidebar.collapsed{transform:translateX(100%)}
+
+.sidebar-content{
+  display:flex;
+  flex-direction:column;
+  height:100%;
+  padding:20px 24px;
+  box-sizing:border-box;
+  overflow:hidden;
+}
+.sidebar-content h2{
+  font-size:20px;
+  font-weight:700;
+  margin-top:0;
+  margin-bottom:20px;
+  color:#d0e8d4;
+  letter-spacing:0.5px;
+  border-bottom:1px solid #1a2e20;
+  padding-bottom:10px;
+}
+.sidebar-section{
+  display:flex;
+  flex-direction:column;
+  margin-bottom:20px;
+  min-height:0;
+  flex:1;
+}
+.sidebar-section:nth-child(2){flex:1.2}
+.sidebar-section:nth-child(3){flex:1.4}
+.sidebar-section:nth-child(4){flex:1.4}
+.sidebar-section h3{
+  font-size:14px;
+  margin:0 0 8px 0;
+  color:#5a7a60;
+  text-transform:uppercase;
+  letter-spacing:0.8px;
+  font-weight:600;
+}
+
+.search-container{margin-bottom:8px}
+.search-input{
+  width:100%;
+  padding:8px 12px;
+  border-radius:6px;
+  border:1px solid #1a2e20;
+  background:#080f0a;
+  color:#c8d5c0;
+  font-size:12px;
+  box-sizing:border-box;
+  transition:border-color 0.2s,box-shadow 0.2s;
+}
+.search-input:focus{
+  outline:none;
+  border-color:#2e5a3e;
+  box-shadow:0 0 0 2px rgba(46,90,62,0.3);
+}
+
+.legend-list,.stats-list{
+  flex:1;
+  overflow-y:auto;
+  border:1px solid #1a2e20;
+  border-radius:6px;
+  background:rgba(4,10,6,0.6);
+  padding:8px;
+}
+.legend-list{display:flex;flex-direction:column;gap:8px}
+
+.legend-item{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-size:12px;
+  color:#b0c8b4;
+  padding:6px;
+  border-radius:4px;
+  cursor:pointer;
+}
+.legend-color{width:10px;height:10px;border-radius:50%;flex-shrink:0;box-shadow:0 0 5px rgba(0,0,0,0.5)}
+.legend-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+.stats-item{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:6px 10px;
+  border-radius:4px;
+  font-size:12px;
+  margin-bottom:4px;
+  cursor:pointer;
+}
+.stats-item-left{display:flex;align-items:center;gap:8px;min-width:0}
+.stats-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.stats-name{color:#b0c8b4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stats-count{
+  background:#0c180f;
+  border:1px solid #1e3524;
+  padding:2px 6px;
+  border-radius:10px;
+  font-size:11px;
+  color:#6a9a74;
+  font-weight:600;
+  font-family:monospace;
+  flex-shrink:0;
+}
+
+.legend-item.pinned{
+  background:rgba(58,125,82,0.15);
+  border-radius:4px;
+  box-shadow:inset 0 0 0 1px rgba(58,125,82,0.35);
+}
+.stats-item.pinned{
+  background:rgba(46,90,62,0.3);
+  border:1px solid #2e5a3e;
+}
+
+/* Scrollbars */
+.legend-list::-webkit-scrollbar,
+.stats-list::-webkit-scrollbar,
+.sidebar-content::-webkit-scrollbar{width:6px;height:6px}
+.legend-list::-webkit-scrollbar-track,
+.stats-list::-webkit-scrollbar-track,
+.sidebar-content::-webkit-scrollbar-track{background:transparent}
+.legend-list::-webkit-scrollbar-thumb,
+.stats-list::-webkit-scrollbar-thumb,
+.sidebar-content::-webkit-scrollbar-thumb{background:#1a2e20;border-radius:3px}
