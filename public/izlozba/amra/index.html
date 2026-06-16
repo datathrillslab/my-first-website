@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="hr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="theme-color" content="#343eef" />
+    <title>Erasmus kompas riječkog osoblja</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="page">
+      <header class="hero">
+        <h1>Erasmus kompas riječkog osoblja</h1>
+        <div class="level" id="level">
+          <button id="back" class="back" type="button" aria-label="Natrag na sve sastavnice">
+            ← Sve sastavnice
+          </button>
+          <h2 id="level-title">Sve sastavnice</h2>
+          <p id="level-subtitle" class="subtitle"></p>
+        </div>
+      </header>
+
+      <main>
+        <div class="map-wrap">
+          <svg id="map" role="img" aria-label="Karta Erasmus mobilnosti osoblja"></svg>
+          <div id="tooltip" class="tooltip" role="status" aria-live="polite"></div>
+        </div>
+      </main>
+    </div>
+
+    <script src="vendor/d3.v7.min.js"></script>
+    <script src="vendor/topojson-client.min.js"></script>
+    <script src="app.js"></script>
+
+    <!-- NAZAD button -->
+    <a href="../index.html" class="nazad-home">NAZAD</a>
+    <style>
+      .nazad-home{
+        position:fixed; left:50%; bottom:22px; transform:translateX(-50%);
+        z-index:2147483000;
+        display:inline-flex; align-items:center; justify-content:center;
+        padding:11px 28px;
+        font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+        font-size:14px; font-weight:600; letter-spacing:0.08em;
+        color:#ffffff; text-decoration:none;
+        background:rgba(17,21,34,0.88); -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);
+        border:1px solid rgba(255,255,255,0.45); border-radius:999px;
+        box-shadow:0 6px 20px rgba(0,0,0,0.35);
+        transition:background .18s ease, transform .18s ease, border-color .18s ease;
+      }
+      .nazad-home:hover{ background:rgba(40,48,78,0.95); border-color:rgba(255,255,255,0.8); transform:translateX(-50%) translateY(-2px); }
+    </style>
+  </body>
+</html>

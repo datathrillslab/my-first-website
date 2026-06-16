@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="hr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Erasmus mobilnost osoblja — Vizualizacije</title>
+  <style>
+    :root {
+      --bg: #1e2638;
+      --card: #2b3550;
+      --card-hover: #344063;
+      --text: #ffffff;
+      --muted: #c2c9da;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 64px 24px 80px;
+    }
+
+    header {
+      text-align: center;
+      max-width: 760px;
+      margin-bottom: 48px;
+    }
+
+    header h1 {
+      font-size: clamp(28px, 5vw, 46px);
+      font-weight: 700;
+      line-height: 1.1;
+    }
+
+    header p {
+      margin-top: 16px;
+      color: var(--muted);
+      font-size: clamp(15px, 2.2vw, 18px);
+      line-height: 1.5;
+    }
+
+    .list {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      width: 100%;
+      max-width: 1080px;
+    }
+
+    .card {
+      display: flex;
+      flex-direction: column;
+      background: var(--card);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      text-decoration: none;
+      color: inherit;
+      transition: background 0.15s ease;
+    }
+
+    .card:hover {
+      background: var(--card-hover);
+    }
+
+    .thumb {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      background: #161c2b;
+      overflow: hidden;
+    }
+
+    .thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .body {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 20px;
+      flex: 1;
+    }
+
+    .body h2 {
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .body p {
+      color: var(--muted);
+      font-size: 14.5px;
+      line-height: 1.55;
+    }
+
+    footer {
+      margin-top: 48px;
+      color: var(--muted);
+      font-size: 13px;
+      text-align: center;
+    }
+
+    @media (max-width: 860px) {
+      .list { grid-template-columns: 1fr; max-width: 420px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Erasmus mobilnost osoblja</h1>
+    <p>Tri vizualizacije podataka o mobilnosti osoblja Sveučilišta u Rijeci. Odaberite jednu za istraživanje.</p>
+  </header>
+
+  <main class="list">
+    <a class="card" href="amra/index.html">
+      <div class="thumb"><img src="amra.jpg" alt="Erasmus kompas riječkog osoblja" /></div>
+      <div class="body">
+        <h2>Erasmus kompas</h2>
+        <p>Interaktivna karta koja smješta Rijeku u središte i prikazuje kamo putuje osoblje pojedinih sastavnica.</p>
+      </div>
+    </a>
+
+    <a class="card" href="ena_zita/index.html">
+      <div class="thumb"><img src="ena_zita.png" alt="Cvjetovi mobilnosti" /></div>
+      <div class="body">
+        <h2>Cvjetovi mobilnosti</h2>
+        <p>Mobilnost osoblja prikazana kao cvjetovi koji rastu kroz godine, gdje svaka latica predstavlja putovanje.</p>
+      </div>
+    </a>
+
+    <a class="card" href="sebo/erasmus.html">
+      <div class="thumb"><img src="sebo.png" alt="Mreža mobilnosti" /></div>
+      <div class="body">
+        <h2>Mreža mobilnosti</h2>
+        <p>Mrežni dijagram koji povezuje fakultete s europskim sveučilištima prema razmjeni nastavnog osoblja.</p>
+      </div>
+    </a>
+  </main>
+
+  <footer>Sveučilište u Rijeci — Erasmus+</footer>
+</body>
+</html>

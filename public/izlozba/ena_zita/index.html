@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="hr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Erasmus mobilnost osoblja — Interaktivna vizualizacija</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Year controls — centered at top -->
+  <div id="controls">
+    <div id="years-and-track">
+      <div id="years"></div>
+      <div id="time-track" aria-hidden="true">
+        <div id="time-cursor"></div>
+      </div>
+    </div>
+    <div id="playbar">
+      <button id="play">Pokreni</button>
+      <button id="back">Resetiraj</button>
+    </div>
+  </div>
+
+  <div id="viz"></div>
+
+  <!-- Sidebar — hidden by default, opened via info dot -->
+  <div id="sidebar" class="sidebar collapsed">
+    <div class="sidebar-header">
+      <span class="sidebar-title">Pregled mobilnosti</span>
+      <button id="sidebar-close" class="panel-nav-btn" aria-label="Zatvori">×</button>
+    </div>
+    <div class="sidebar-content">
+      <div class="sidebar-section">
+        <h3>Matični fakulteti</h3>
+        <div id="legend-list" class="legend-list"></div>
+      </div>
+
+      <div class="sidebar-section">
+        <h3>Posjeti po osobi</h3>
+        <div class="search-container">
+          <input type="text" id="person-search" placeholder="Pretraži posjetitelje..." class="search-input" />
+        </div>
+        <div id="person-list" class="stats-list"></div>
+      </div>
+
+      <div class="sidebar-section">
+        <h3>Popularnost gradova</h3>
+        <div class="search-container">
+          <input type="text" id="city-search" placeholder="Pretraži gradove..." class="search-input" />
+        </div>
+        <div id="city-list" class="stats-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Info dot — opens the sidebar -->
+  <button id="info-dot" aria-label="Otvori pregled">
+    <span id="info-dot-icon">?</span>
+  </button>
+
+  <!-- Info panel — slides in from right -->
+  <div id="info-panel" class="info-panel">
+    <div class="panel-header">
+      <button id="panel-back" class="panel-nav-btn hidden" aria-label="Natrag">← Natrag</button>
+      <button id="panel-close" class="panel-nav-btn" aria-label="Zatvori">×</button>
+    </div>
+    <div id="info-panel-content"></div>
+  </div>
+
+  <!-- Intro splash overlay -->
+  <div id="intro-overlay">
+    <div id="intro-content">
+      <svg id="intro-flower" viewBox="-65 -65 130 130"></svg>
+      <h1 id="intro-title">Erasmus vrt</h1>
+      <p id="intro-desc">Botanički portret Erasmus mobilnosti osoblja Sveučilišta u Rijeci (UNIRI) — natječaji od ak. god. 2020./2021. do 2025./2027. Svaki svjetleći cvijet predstavlja grad odredišta, a svaka latica nosi boju matičnog fakulteta.</p>
+      <button id="intro-play">&#9654; Početak</button>
+    </div>
+  </div>
+
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="viz.js?v=31"></script>
+
+  <!-- NAZAD button -->
+  <a href="../index.html" class="nazad-home">NAZAD</a>
+  <style>
+    .nazad-home{
+      position:fixed; left:50%; bottom:22px; transform:translateX(-50%);
+      z-index:2147483000;
+      display:inline-flex; align-items:center; justify-content:center;
+      padding:11px 28px;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      font-size:14px; font-weight:600; letter-spacing:0.08em;
+      color:#ffffff; text-decoration:none;
+      background:rgba(17,21,34,0.88); -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);
+      border:1px solid rgba(255,255,255,0.45); border-radius:999px;
+      box-shadow:0 6px 20px rgba(0,0,0,0.35);
+      transition:background .18s ease, transform .18s ease, border-color .18s ease;
+    }
+    .nazad-home:hover{ background:rgba(40,48,78,0.95); border-color:rgba(255,255,255,0.8); transform:translateX(-50%) translateY(-2px); }
+  </style>
+</body>
+</html>
