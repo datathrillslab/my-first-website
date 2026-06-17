@@ -245,3 +245,26 @@ h1 {
 .tooltip .names {
   color: var(--muted);
 }
+
+/* ============================================================
+   4K (3840×2160) — the map fills via the JS resize handler, but
+   the hero text, controls, axis labels and tooltip are sized for
+   1080p and read tiny on a 4K screen. Lift the clamp ceilings and
+   bump the in-SVG text. Point/label scaling is handled in app.js
+   (gated on innerWidth >= 2560). Scoped to amra only.
+   ============================================================ */
+@media (min-width: 2560px) {
+  .page { padding: 0 clamp(40px, 4vw, 96px); }
+  h1 { font-size: 64px; margin-bottom: 18px; }
+  #level-title { font-size: 44px; }
+  .subtitle { font-size: 28px; max-width: 1200px; }
+  .back { font-size: 24px; padding: 12px 30px; margin-bottom: 14px; }
+  #map .axis text { font-size: 30px; }
+  #map .axis line { stroke-width: 2.4; }
+  .tooltip {
+    font-size: 24px;
+    padding: 18px 26px;
+    border-radius: 20px;
+    max-width: 620px;
+  }
+}

@@ -4,15 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Erasmus Staff Mobility Network – University of Rijeka</title>
-    <meta name="description" content="Interactive network visualization of Erasmus staff mobility at the University of Rijeka, showing how faculties send professors to universities worldwide.">
+    <meta name="description" content="Interactive network visualization of Erasmus staff mobility at the University of Rijeka, showing how faculties send staff to universities worldwide.">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://api.fontshare.com/v2/css?f[]=switzer@300,400,500,600,700&display=swap" rel="stylesheet">
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: #080c14;
+            background: #141414;
             color: #e0e6ed;
             overflow: hidden;
             height: 100vh;
@@ -24,7 +25,7 @@
             position: fixed;
             top: 0; left: 0; right: 0;
             z-index: 100;
-            background: linear-gradient(180deg, rgba(8,12,20,0.95) 0%, rgba(8,12,20,0.7) 80%, transparent 100%);
+            background: linear-gradient(180deg, rgba(20,20,20,0.95) 0%, rgba(20,20,20,0.7) 80%, transparent 100%);
             padding: 16px 32px 28px;
             display: flex;
             align-items: center;
@@ -35,9 +36,8 @@
         #header h1 {
             font-size: 20px;
             font-weight: 600;
-            background: linear-gradient(135deg, #60a5fa, #a78bfa);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            font-family: 'Switzer', 'Inter', sans-serif;
+            color: #ffffff;
             letter-spacing: -0.3px;
         }
         #header .subtitle {
@@ -58,58 +58,62 @@
         #left-stack {
             position: fixed;
             top: 70px; left: 16px; bottom: 20px;
-            width: 240px;
             z-index: 90;
             display: flex;
-            flex-direction: column;
-            gap: 12px;
+            flex-direction: row;
+            align-items: stretch;
+            gap: 10px;
             pointer-events: none;
         }
         #left-stack > * { pointer-events: auto; }
 
-        /* ── Legend Panel ───────────────────────────────────────── */
+        /* ── Legend Panel (styled to the Figma "Sending faculties" wireframe) ── */
         #legend-panel {
-            flex: 1 1 auto;
-            min-height: 0;
-            background: rgba(15, 20, 35, 0.85);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(100, 116, 139, 0.15);
+            flex: 0 0 auto;
+            width: 220px;
+            background: #1f1f1f;
             border-radius: 12px;
-            padding: 14px 16px;
+            padding: 16px 18px;
             overflow-y: auto;
-            width: 100%;
+            font-family: 'Switzer', 'Inter', sans-serif;
             scrollbar-width: thin;
-            scrollbar-color: #334155 transparent;
+            scrollbar-color: rgba(255, 255, 255, 0.22) transparent;
         }
+        #legend-panel::-webkit-scrollbar { width: 4px; }
+        #legend-panel::-webkit-scrollbar-track { background: transparent; }
+        #legend-panel::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.22); border-radius: 3px; }
+        #legend-panel::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.35); }
         #legend-panel h3 {
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #64748b;
-            margin-bottom: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: none;
+            letter-spacing: 0;
+            color: #ffffff;
+            margin-bottom: 12px;
         }
         .legend-item {
             display: flex;
             align-items: center;
-            gap: 8px;
-            padding: 5px 6px;
+            gap: 9px;
+            padding: 4px 6px;
             border-radius: 6px;
             cursor: pointer;
             transition: background 0.2s;
-            font-size: 12px;
-            color: #cbd5e1;
+            font-size: 10px;
+            font-weight: 600;
+            color: #ffffff;
         }
-        .legend-item:hover { background: rgba(100, 116, 139, 0.15); }
-        .legend-entry.active > .legend-item { background: rgba(100, 116, 139, 0.25); }
+        .legend-item:hover { background: rgba(255, 255, 255, 0.06); }
+        .legend-entry.active > .legend-item { background: rgba(255, 255, 255, 0.10); }
         .legend-dot {
-            width: 10px; height: 10px;
+            width: 6px; height: 6px;
             border-radius: 50%;
             flex-shrink: 0;
         }
         .legend-label { flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .legend-count {
-            font-size: 10px;
-            color: #64748b;
+            font-size: 9px;
+            color: #8a8a8a;
             font-weight: 500;
             flex-shrink: 0;
         }
@@ -120,7 +124,7 @@
             width: 14px;
             text-align: center;
             font-size: 9px;
-            color: #94a3b8;
+            color: #b0b0b0;
             transition: transform 0.2s;
         }
         .legend-entry.active .legend-caret { display: inline-block; }
@@ -128,55 +132,63 @@
         /* Auto professor dropdown under the selected faculty */
         .prof-dropdown {
             display: none;
-            margin: 2px 0 4px 22px;
+            margin: 2px 0 4px 21px;
             padding-left: 8px;
-            border-left: 1px solid rgba(100, 116, 139, 0.25);
+            border-left: 1px solid rgba(255, 255, 255, 0.14);
         }
         .legend-entry.expanded .prof-dropdown { display: block; }
         .prof-name {
-            font-size: 11px;
-            color: #94a3b8;
+            font-size: 10px;
+            font-weight: 400;
+            color: #b8b8b8;
             padding: 2px 4px;
-            line-height: 1.4;
+            line-height: 1.5;
             border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.15s, color 0.15s;
         }
+        .prof-name:hover { background: rgba(255, 255, 255, 0.08); color: #ffffff; }
 
-        /* ── Info / Details Panel (bottom of the left stack) ─────── */
+        /* ── Selected-faculty / Details Panel (beside the legend, per Figma Section 2) ── */
         #info-panel {
             flex: 0 0 auto;
-            width: 100%;
-            max-height: 42vh;
+            width: 220px;
             overflow-y: auto;
-            background: rgba(15, 20, 35, 0.9);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(100, 116, 139, 0.15);
+            background: #1f1f1f;
             border-radius: 12px;
-            padding: 16px 20px;
+            padding: 16px 18px;
+            font-family: 'Switzer', 'Inter', sans-serif;
             font-size: 13px;
             scrollbar-width: thin;
-            scrollbar-color: #334155 transparent;
+            scrollbar-color: rgba(255, 255, 255, 0.22) transparent;
             display: none;
         }
         #info-panel.visible { display: block; }
+        #info-panel::-webkit-scrollbar { width: 4px; }
+        #info-panel::-webkit-scrollbar-track { background: transparent; }
+        #info-panel::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.22); border-radius: 3px; }
+        #info-panel::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.35); }
         #info-panel h4 {
-            font-size: 14px;
+            font-size: 12px;
             font-weight: 600;
             margin-bottom: 6px;
-            color: #f1f5f9;
+            color: #ffffff;
+            line-height: 1.35;
         }
         #info-panel .info-detail {
-            font-size: 12px;
-            color: #94a3b8;
+            font-size: 11px;
+            color: #c8c8c8;
             line-height: 1.6;
         }
+        #info-panel .info-detail strong { color: #ffffff; font-weight: 600; }
         /* Scrollable chip list for long destination/source lists */
         .tag-scroll {
             margin-top: 6px;
-            max-height: 26vh;
+            max-height: 60vh;
             overflow-y: auto;
             padding-right: 4px;
             scrollbar-width: thin;
-            scrollbar-color: #334155 transparent;
+            scrollbar-color: rgba(255, 255, 255, 0.22) transparent;
             -webkit-overflow-scrolling: touch;
         }
         #info-panel .info-tag {
@@ -331,17 +343,57 @@
         /* ── SVG ────────────────────────────────────────────────── */
         #viz-container { width: 100vw; height: 100vh; }
         svg { display: block; }
+
+        /* ── 4K (3840×2160) ─────────────────────────────────────────
+           Node/label sizes scale in JS (NODE_SCALE); this scales the
+           fixed-px HTML chrome (~1.8×) so panels/buttons/text read on a
+           4K screen. Scoped to this file only. */
+        @media (min-width: 2560px) {
+            #header { padding: 28px 56px 48px; gap: 28px; }
+            #header h1 { font-size: 36px; letter-spacing: -0.5px; }
+            #header .subtitle { font-size: 22px; }
+            .stats-bar { gap: 36px; font-size: 20px; }
+            .stats-bar .stat-val { font-size: 26px; }
+
+            #left-stack { top: 120px; left: 28px; bottom: 36px; gap: 18px; }
+            #legend-panel, #info-panel { width: 400px; border-radius: 20px; padding: 28px 30px; }
+            #legend-panel h3 { font-size: 22px; margin-bottom: 20px; }
+            .legend-item { gap: 16px; padding: 8px 10px; border-radius: 10px; font-size: 18px; }
+            .legend-dot { width: 11px; height: 11px; }
+            .legend-count { font-size: 16px; }
+            .legend-caret { width: 24px; font-size: 16px; }
+            .prof-dropdown { margin: 4px 0 8px 36px; padding-left: 14px; }
+            .prof-name { font-size: 18px; padding: 4px 8px; }
+            #info-panel { font-size: 22px; }
+            #info-panel h4 { font-size: 22px; margin-bottom: 10px; }
+            #info-panel .info-detail { font-size: 19px; }
+            #info-panel .info-tag { font-size: 18px; padding: 4px 14px; border-radius: 7px; margin: 4px; }
+
+            #tooltip { font-size: 21px; padding: 14px 20px; border-radius: 14px; max-width: 560px; }
+
+            #controls { bottom: 36px; gap: 14px; }
+            .ctrl-btn { padding: 14px 26px; font-size: 21px; border-radius: 14px; }
+
+            #info-btn { right: 28px; width: 74px; height: 74px; font-size: 35px; }
+            #info-drawer { width: min(680px, 86vw); padding: 50px 46px; }
+            #info-drawer h2 { font-size: 32px; margin-bottom: 8px; }
+            #info-drawer .drawer-sub { font-size: 21px; margin-bottom: 32px; }
+            #info-drawer h3 { font-size: 21px; margin: 32px 0 14px; }
+            #info-drawer p, #info-drawer li { font-size: 23px; }
+            #info-drawer .placeholder-note { font-size: 21px; padding: 22px 24px; }
+            #drawer-close { top: 28px; right: 28px; width: 54px; height: 54px; font-size: 28px; border-radius: 14px; }
+        }
     </style>
 </head>
 <body>
     <div id="header">
         <div>
             <h1>Erasmus Staff Mobility Network</h1>
-            <div class="subtitle">University of Rijeka · Faculty → Professor → Destination</div>
+            <div class="subtitle">University of Rijeka · Faculty → Staff → Destination</div>
         </div>
         <div class="stats-bar">
             <div><div class="stat-val" id="stat-fac">0</div>Faculties</div>
-            <div><div class="stat-val" id="stat-prof">0</div>Professors</div>
+            <div><div class="stat-val" id="stat-prof">0</div>Staff</div>
             <div><div class="stat-val" id="stat-mob">0</div>Mobilities</div>
             <div><div class="stat-val" id="stat-dest">0</div>Destinations</div>
         </div>
@@ -349,7 +401,7 @@
 
     <div id="left-stack">
         <div id="legend-panel">
-            <h3>Sending Faculties</h3>
+            <h3>Sending faculties</h3>
             <div id="legend-list"></div>
         </div>
 
@@ -370,13 +422,13 @@
         <div class="drawer-sub">Erasmus Staff Mobility Network · University of Rijeka</div>
 
         <h3>The diagram</h3>
-        <p>Each University of Rijeka faculty sits on the inner ring. The outer ring shows the destination universities their professors travelled to under Erasmus staff mobility.</p>
+        <p>Each University of Rijeka faculty sits on the inner ring. The outer ring shows the destination universities their staff travelled to under Erasmus staff mobility.</p>
 
         <h3>Exploring</h3>
         <ul>
-            <li><strong>Tap a faculty</strong> (node or its entry in the left list) to fan out its professors and reveal where they went.</li>
+            <li><strong>Tap a faculty</strong> (node or its entry in the left list) to fan out its staff and reveal where they went.</li>
             <li><strong>Tap a destination</strong> to see its name and which faculties have sent staff there.</li>
-            <li>Use the <strong>Sending Faculties</strong> list to open a faculty's professor dropdown; collapse it with the caret to keep scrolling.</li>
+            <li>Use the <strong>Sending faculties</strong> list to open a faculty's staff dropdown; collapse it with the caret to keep scrolling.</li>
             <li><strong>Tap the background</strong> or <em>Clear Selection</em> to reset.</li>
         </ul>
 
@@ -413,6 +465,11 @@
     const centerX = width / 2;
     const centerY = height / 2;
 
+    // Na 4K (3840×2160) prsten fakulteta već raste s platnom (facRadius = min(w,h)·0.30),
+    // ali su čvorovi, razmaci i labele u fiksnim px pa izgledaju sitno. Skaliramo ih
+    // istim faktorom da viz ostane razmjeran i čitljiv. Vrijedi samo za sebo_2.
+    const NODE_SCALE = width >= 2560 ? 1.9 : 1;
+
     // Stats
     document.getElementById('stat-fac').textContent = DATA.faculties.length;
     document.getElementById('stat-prof').textContent = DATA.professors.length;
@@ -439,7 +496,7 @@
     // Proxy positions (for collapsed state)
     const proxyPositions = new Map();
     facultyPositions.forEach((fpos, facId) => {
-        const r = 26; // attached to the edge
+        const r = 26 * NODE_SCALE; // attached to the edge
         const x = fpos.x + r * Math.cos(fpos.angle);
         const y = fpos.y + r * Math.sin(fpos.angle);
         proxyPositions.set(facId, { x, y, color: fpos.color });
@@ -462,7 +519,10 @@
     });
 
     // Professor node radius function – scales with participation count
-    function profRadius(count) { return 2.5 + Math.sqrt(count - 1) * 2.5; }
+    function profRadius(count) { return (2.5 + Math.sqrt(count - 1) * 2.5) * NODE_SCALE; }
+    // Professors render as diamonds; this is the diamond circumradius factor (vertex distance
+    // = DIAMOND_SCALE * profRadius). Collision/clearance must use it so diamonds never overlap.
+    const DIAMOND_SCALE = 1.2;
 
     // Professor positions – start with a math layout and resolve overlaps with a force simulation
     const profPositions = new Map();
@@ -483,8 +543,8 @@
             const a = baseAngle + (fraction * 2 - 1) * maxWedge;
             
             // Softer radial extension since the cone is wider
-            const minR = 30; 
-            const r = minR + Math.pow(i, 0.55) * 12; 
+            const minR = 30 * NODE_SCALE;
+            const r = minR + Math.pow(i, 0.55) * 12 * NODE_SCALE;
             
             const x = fpos.x + r * Math.cos(a);
             const y = fpos.y + r * Math.sin(a);
@@ -498,7 +558,7 @@
 
     // Resolve overlaps compactly while strictly preserving the cone shape
     const profSim = d3.forceSimulation(profNodeData)
-        .force('collide', d3.forceCollide().radius(d => profRadius(d.count) + 1.5).strength(1))
+        .force('collide', d3.forceCollide().radius(d => profRadius(d.count) + 1.5 * NODE_SCALE).strength(1))
         .force('x', d3.forceX(d => d.initialX).strength(0.4))
         .force('y', d3.forceY(d => d.initialY).strength(0.4))
         .stop();
@@ -539,8 +599,8 @@
     // pass guaranteeing zero overlap. Stored as soloX/soloY on each prof node.
     {
         const SOLO_WEDGE = 0.7;     // half-angle of the cone (~40°)
-        const SOLO_BAND_GAP = 26;   // radial gap between bands
-        const SOLO_OUTER = baseRadius - 24; // keep the fan clear of the dest ring
+        const SOLO_BAND_GAP = 26 * NODE_SCALE;   // radial gap between bands
+        const SOLO_OUTER = baseRadius - 24 * NODE_SCALE; // keep the fan clear of the dest ring
         const maxProfR = Math.max(...DATA.professors.map(p => profRadius(p.count)));
 
         profByFaculty.forEach((profs, facId) => {
@@ -549,9 +609,9 @@
             if (!fpos || n === 0) return;
 
             // Inner radius scales with this faculty's node size (glow ring = 14 + √mob·1.5)
-            const facGlow = 14 + Math.sqrt(mobCountByFaculty.get(facId) || 0) * 1.5;
-            const innerR = facGlow + maxProfR + 6;   // clear the node + a professor radius
-            const minR = innerR + 8;                 // first band sits just beyond it
+            const facGlow = (14 + Math.sqrt(mobCountByFaculty.get(facId) || 0) * 1.5) * NODE_SCALE;
+            const innerR = facGlow + maxProfR * DIAMOND_SCALE + 6 * NODE_SCALE;   // clear the node + a diamond
+            const minR = innerR + 8 * NODE_SCALE;                 // first band sits just beyond it
 
             // Bias targets into a filled cone: concentric arcs across the wedge
             const perBand = Math.max(3, Math.ceil(Math.sqrt(n) * 1.6));
@@ -568,7 +628,7 @@
             });
 
             const sim = d3.forceSimulation(work)
-                .force('collide', d3.forceCollide(d => profRadius(d.count) + 3).strength(1).iterations(2))
+                .force('collide', d3.forceCollide(d => profRadius(d.count) * DIAMOND_SCALE + 3 * NODE_SCALE).strength(1).iterations(2))
                 .force('x', d3.forceX(d => d.tx).strength(0.3))
                 .force('y', d3.forceY(d => d.ty).strength(0.3))
                 .stop();
@@ -587,7 +647,7 @@
 
             // Final collision-only pass so the clamp can never leave two circles touching
             const sim2 = d3.forceSimulation(work)
-                .force('collide', d3.forceCollide(d => profRadius(d.count) + 3).strength(1).iterations(4))
+                .force('collide', d3.forceCollide(d => profRadius(d.count) * DIAMOND_SCALE + 3 * NODE_SCALE).strength(1).iterations(4))
                 .stop();
             for (let i = 0; i < 60; i++) sim2.tick();
 
@@ -599,7 +659,7 @@
         });
     }
 
-    function destRadius(totalProfs) { return 3 + Math.sqrt(totalProfs) * 2; }
+    function destRadius(totalProfs) { return (3 + Math.sqrt(totalProfs) * 2) * NODE_SCALE; }
 
     const destData = DATA.destinations.map(d => {
         const profs = destProfMap.get(d.name) || [];
@@ -631,7 +691,7 @@
     // By using a weaker radial force and a stronger collision force, the nodes will organically 
     // push each other outwards/inwards into a nicely packed donut shape instead of a crowded 1D line.
     const destSim = d3.forceSimulation(destData)
-        .force('collide', d3.forceCollide().radius(d => destRadius(d.totalProfs) + 6).strength(1).iterations(3))
+        .force('collide', d3.forceCollide().radius(d => destRadius(d.totalProfs) + 6 * NODE_SCALE).strength(1).iterations(3))
         .force('radial', d3.forceRadial(d => d.targetDist, centerX, centerY).strength(0.3))
         .force('x', d3.forceX(d => centerX + d.targetDist * Math.cos(d.targetAngle)).strength(0.01))
         .force('y', d3.forceY(d => centerY + d.targetDist * Math.sin(d.targetAngle)).strength(0.01))
@@ -658,8 +718,8 @@
     const defs = svg.append('defs');
     const bgGrad = defs.append('radialGradient').attr('id', 'bg-grad')
         .attr('cx', '50%').attr('cy', '50%').attr('r', '60%');
-    bgGrad.append('stop').attr('offset', '0%').attr('stop-color', '#0f1729');
-    bgGrad.append('stop').attr('offset', '100%').attr('stop-color', '#080c14');
+    bgGrad.append('stop').attr('offset', '0%').attr('stop-color', '#1c1c1c');
+    bgGrad.append('stop').attr('offset', '100%').attr('stop-color', '#141414');
 
     // Glow filter
     const glow = defs.append('filter').attr('id', 'glow');
@@ -667,6 +727,16 @@
     const feMerge = glow.append('feMerge');
     feMerge.append('feMergeNode').attr('in', 'blur');
     feMerge.append('feMergeNode').attr('in', 'SourceGraphic');
+
+    // Node "glow circle" filter (Figma Section 3) — soft halo around a crisp solid
+    // core, with an expanded region so the blur isn't clipped. Used by faculty
+    // nodes and the collapsed proxy markers; the glow dims with the node's fill.
+    const nodeGlow = defs.append('filter').attr('id', 'nodeGlow')
+        .attr('x', '-150%').attr('y', '-150%').attr('width', '400%').attr('height', '400%');
+    nodeGlow.append('feGaussianBlur').attr('stdDeviation', '3.5').attr('result', 'nblur');
+    const nodeMerge = nodeGlow.append('feMerge');
+    nodeMerge.append('feMergeNode').attr('in', 'nblur');
+    nodeMerge.append('feMergeNode').attr('in', 'SourceGraphic');
 
     svg.append('rect').attr('width', width).attr('height', height).attr('fill', 'url(#bg-grad)');
 
@@ -780,10 +850,10 @@
     // Destination labels (only for highly shared ones)
     destCircles.filter(d => d.totalProfs >= 4)
         .append('text')
-        .attr('dy', d => -destRadius(d.totalProfs) - 6)
+        .attr('dy', d => -destRadius(d.totalProfs) - 6 * NODE_SCALE)
         .attr('text-anchor', 'middle')
         .attr('fill', '#94a3b8')
-        .attr('font-size', '9px')
+        .attr('font-size', (9 * NODE_SCALE) + 'px')
         .attr('font-weight', '500')
         .text(d => d.name.length > 30 ? d.name.substring(0, 28) + '…' : d.name);
 
@@ -793,23 +863,27 @@
         .data([...proxyPositions.entries()].map(([id, p]) => ({ id, ...p })))
         .enter().append('circle')
         .attr('cx', d => d.x).attr('cy', d => d.y)
-        .attr('r', 4.5)
+        .attr('r', 5 * NODE_SCALE)
         .attr('fill', d => d.color)
         .attr('stroke', '#fff')
         .attr('stroke-width', 1)
+        .attr('filter', 'url(#nodeGlow)')
         .style('cursor', 'pointer');
 
 
-    // ── Draw Professor Nodes ─────────────────────────────────────────
+    // ── Draw Professor Nodes (diamonds, per Figma Section 3) ─────────
     const profNodes = g.append('g').attr('class', 'prof-nodes');
     const profData = [...profPositions.entries()].map(([id, p]) => ({ id, ...p }));
 
-    const profCircles = profNodes.selectAll('circle')
+    // Diamond centred at the origin; positioned via transform, emphasis via scale.
+    const diamondPath = r => `M 0 ${-r} L ${r} 0 L 0 ${r} L ${-r} 0 Z`;
+    const profDiamondR = count => profRadius(count) * DIAMOND_SCALE;
+
+    const profCircles = profNodes.selectAll('path')
         .data(profData)
-        .enter().append('circle')
-        .attr('cx', d => d.x)
-        .attr('cy', d => d.y)
-        .attr('r', d => profRadius(d.count))
+        .enter().append('path')
+        .attr('d', d => diamondPath(profDiamondR(d.count)))
+        .attr('transform', d => `translate(${d.x},${d.y})`)
         .attr('fill', d => facultyColorMap.get(d.faculty))
         .attr('fill-opacity', 0.7)
         .attr('stroke', d => d.count > 1 ? '#fff' : 'none')
@@ -834,38 +908,38 @@
 
     // Outer glow ring
     facGroups.append('circle')
-        .attr('r', d => 14 + Math.sqrt(d.count) * 1.5)
+        .attr('r', d => (14 + Math.sqrt(d.count) * 1.5) * NODE_SCALE)
         .attr('fill', 'none')
         .attr('stroke', d => d.color)
         .attr('stroke-opacity', 0.15)
         .attr('stroke-width', 3);
 
-    // Main circle
+    // Main circle (glow circle — solid core + soft halo via nodeGlow)
     facGroups.append('circle')
-        .attr('r', d => 10 + Math.sqrt(d.count))
+        .attr('r', d => (10 + Math.sqrt(d.count)) * NODE_SCALE)
         .attr('fill', d => d.color)
         .attr('fill-opacity', 0.9)
         .attr('stroke', '#fff')
         .attr('stroke-width', 1.5)
         .attr('stroke-opacity', 0.4)
-        .attr('filter', 'url(#glow)');
+        .attr('filter', 'url(#nodeGlow)');
 
     // Faculty label — non-clickable so it never steals a tap meant for the node behind it
     facGroups.append('text')
-        .attr('dy', d => -(14 + Math.sqrt(d.count)) - 8)
+        .attr('dy', d => (-(14 + Math.sqrt(d.count)) - 8) * NODE_SCALE)
         .attr('text-anchor', 'middle')
         .attr('fill', d => d.color)
-        .attr('font-size', '11px')
+        .attr('font-size', (11 * NODE_SCALE) + 'px')
         .attr('font-weight', '600')
         .style('pointer-events', 'none')
         .text(d => d.label);
 
     // Count badge
     facGroups.append('text')
-        .attr('dy', 4)
+        .attr('dy', 4 * NODE_SCALE)
         .attr('text-anchor', 'middle')
         .attr('fill', '#fff')
-        .attr('font-size', '9px')
+        .attr('font-size', (9 * NODE_SCALE) + 'px')
         .attr('font-weight', '700')
         .text(d => d.count);
 
@@ -906,7 +980,7 @@
 
         const profs = (profByFaculty.get(f.id) || []).slice()
             .sort((a, b) => a.name.localeCompare(b.name, 'hr'));
-        const profRows = profs.map(p => `<div class="prof-name">${escapeAttr(p.name)}</div>`).join('');
+        const profRows = profs.map(p => `<div class="prof-name" data-prof="${escapeAttr(p.id)}">${escapeAttr(p.name)}</div>`).join('');
 
         entry.innerHTML = `
             <div class="legend-item">
@@ -924,6 +998,12 @@
             entry.classList.toggle('expanded');
         });
         legendList.appendChild(entry);
+    });
+
+    // Click a staff name in the dropdown → jump to that staff member's node + show their tooltip
+    legendList.addEventListener('click', (e) => {
+        const row = e.target.closest('.prof-name');
+        if (row && row.dataset.prof) { e.stopPropagation(); focusStaff(row.dataset.prof); }
     });
 
     // ── Interaction ──────────────────────────────────────────────────
@@ -955,6 +1035,11 @@
     // Resolve a professor node's base or wide-"solo"-cone coordinate
     function profX(p, useSolo) { return (useSolo && p && p.soloX != null) ? p.soloX : (p ? p.x : 0); }
     function profY(p, useSolo) { return (useSolo && p && p.soloY != null) ? p.soloY : (p ? p.y : 0); }
+
+    // Whether a professor diamond is meant to be visible/interactive right now:
+    // only the selected faculty's professors (or all of them when globally expanded).
+    // Used to stop hover from revealing professors of other faculties.
+    function profVisible(d) { return activeFaculty ? d.faculty === activeFaculty : globalExpanded; }
 
     // Move one faculty's professor link endpoints between base and solo positions.
     // Uses a NAMED transition ('pos') so it never interrupts opacity transitions.
@@ -1004,9 +1089,7 @@
         profCircles.style('pointer-events', d => d.faculty === facId ? 'all' : 'none');
         profCircles.transition().duration(400)
             .style('opacity', d => d.faculty === facId ? 1 : 0)
-            .attr('cx', d => profX(d, d.faculty === facId))
-            .attr('cy', d => profY(d, d.faculty === facId))
-            .attr('r', d => profRadius(d.count))
+            .attr('transform', d => `translate(${profX(d, d.faculty === facId)},${profY(d, d.faculty === facId)})`)
             .attr('fill-opacity', d => d.faculty === facId ? 0.95 : 0)
             .attr('stroke', d => d.count > 1 ? '#fff' : 'none')
             .attr('stroke-width', d => d.count > 1 ? 0.8 : 0)
@@ -1062,7 +1145,7 @@
         const facInfo = facData.find(f => f.id === facId);
         infoTitle.textContent = facId;
         infoDetail.innerHTML = `
-            <strong>${facInfo.profCount}</strong> professors · <strong>${facInfo.count}</strong> mobility events<br>
+            <strong>${facInfo.profCount}</strong> staff · <strong>${facInfo.count}</strong> mobility events<br>
             <strong>${connDests.size}</strong> destination universities<br><br>
             <strong>Destinations:</strong>
             <div class="tag-scroll">
@@ -1079,7 +1162,7 @@
 
         // Pin the destination's name — touchscreens have no hover to reveal it
         pinTooltip(
-            `<strong>${dData.name}</strong><br>${dData.totalProfs} professor${dData.totalProfs > 1 ? 's' : ''} from ${dData.numSources} facult${dData.numSources > 1 ? 'ies' : 'y'}`,
+            `<strong>${dData.name}</strong><br>${dData.totalProfs} staff from ${dData.numSources} facult${dData.numSources > 1 ? 'ies' : 'y'}`,
             event
         );
 
@@ -1094,9 +1177,8 @@
             // Active faculty's professors stay in their solo cone, dimmed; accent those who went to dest
             profCircles.filter(d => d.faculty === activeFaculty).transition().duration(300)
                 .style('opacity', 1)
-                .attr('cx', d => profX(d, true)).attr('cy', d => profY(d, true))
-                .attr('fill-opacity', d => d.destinations.includes(dest) ? 0.95 : 0.3)
-                .attr('r', d => d.destinations.includes(dest) ? profRadius(d.count) * 1.25 : profRadius(d.count));
+                .attr('transform', d => `translate(${profX(d, true)},${profY(d, true)}) scale(${d.destinations.includes(dest) ? 1.25 : 1})`)
+                .attr('fill-opacity', d => d.destinations.includes(dest) ? 0.95 : 0.3);
 
             // Active faculty's prof→dest links stay (dimmer); accent the link(s) to dest
             profDestLinks.selectAll('line').filter(d => d.faculty === activeFaculty).transition().duration(300)
@@ -1143,8 +1225,8 @@
                 .attr('stroke-width', d => d.destination === dest ? 2 : 0.4);
 
             profCircles.transition().duration(300)
-                .attr('fill-opacity', d => d.destinations.includes(dest) ? 1 : 0.05)
-                .attr('r', d => d.destinations.includes(dest) ? profRadius(d.count) * 1.4 : profRadius(d.count) * 0.5);
+                .attr('transform', d => `translate(${d.x},${d.y}) scale(${d.destinations.includes(dest) ? 1.4 : 0.5})`)
+                .attr('fill-opacity', d => d.destinations.includes(dest) ? 1 : 0.05);
 
             facGroups.selectAll('circle:nth-child(2)').transition().duration(300)
                 .attr('fill-opacity', d => srcFacs.has(d.id) ? 1 : 0.15);
@@ -1165,7 +1247,7 @@
 
         infoTitle.textContent = dest;
         infoDetail.innerHTML = `
-            <strong>${dData.totalProfs}</strong> professors · <strong>${dData.numSources}</strong> sending facult${dData.numSources > 1 ? 'ies' : 'y'}<br><br>
+            <strong>${dData.totalProfs}</strong> staff · <strong>${dData.numSources}</strong> sending facult${dData.numSources > 1 ? 'ies' : 'y'}<br><br>
             <strong>From:</strong>
             <div class="tag-scroll">
             ${dData.sources.map(s => '<span class="info-tag" data-fac="' + escapeAttr(s) + '" style="background:' + facultyColorMap.get(s) + '22;color:' + facultyColorMap.get(s) + '">' + (DATA.faculties.find(f=>f.id===s)?.label || s) + '</span>').join('')}
@@ -1188,9 +1270,8 @@
         proxyDestLinksGroup.selectAll('line').transition().duration(300).attr('stroke-opacity', 0.25).attr('stroke-width', 1.2);
 
         profCircles.transition().duration(300)
-            .attr('cx', d => d.x).attr('cy', d => d.y)
+            .attr('transform', d => `translate(${d.x},${d.y})`)
             .attr('fill-opacity', 0.7)
-            .attr('r', d => profRadius(d.count))
             .attr('stroke', d => d.count > 1 ? '#fff' : 'none')
             .attr('stroke-opacity', d => d.count > 1 ? 0.5 : 0);
         proxyCircles.transition().duration(300).attr('fill-opacity', 1).attr('stroke-opacity', 1);
@@ -1210,32 +1291,68 @@
     }
 
     // Tooltip events
-    profCircles.on('mouseover', function(event, d) {
-        if (tooltipPinned) return;
-        tooltip.style.opacity = 1;
+    // Tooltip body for a staff member (shared by hover and the left-menu "jump to" click)
+    function staffTooltipHTML(d) {
         const destList = d.destinations.slice(0, 6).map(dest => '→ ' + (dest.length > 40 ? dest.substring(0, 38) + '…' : dest)).join('<br>');
         const moreCount = d.destinations.length > 6 ? '<br><span style="color:#64748b">+' + (d.destinations.length - 6) + ' more destinations</span>' : '';
         const yearList = d.years ? d.years.join(', ') : '';
-        tooltip.innerHTML = `<strong>${d.name}</strong>${d.count > 1 ? ' <span style="color:#fbbf24;font-weight:600">(' + d.count + '× participations)</span>' : ''}<br><span style="color:${facultyColorMap.get(d.faculty)}">${d.faculty}</span><br>${destList}${moreCount}<br><span style="color:#64748b">${yearList}</span>`;
+        return `<strong>${d.name}</strong>${d.count > 1 ? ' <span style="color:#fbbf24;font-weight:600">(' + d.count + '× participations)</span>' : ''}<br><span style="color:${facultyColorMap.get(d.faculty)}">${d.faculty}</span><br>${destList}${moreCount}<br><span style="color:#64748b">${yearList}</span>`;
+    }
+
+    // Jump to a staff member from the left menu: select their faculty if needed,
+    // pan their node to centre, emphasise the diamond, and pin their tooltip.
+    function focusStaff(profId) {
+        const node = profData.find(p => p.id === profId);
+        if (!node) return;
+        if (activeFaculty !== node.faculty) highlightFaculty(node.faculty);
+        activeDestination = null;
+
+        const px = profX(node, true), py = profY(node, true);
+        const k = d3.zoomTransform(svg.node()).k;
+        const target = d3.zoomIdentity.translate(width / 2 - k * px, height / 2 - k * py).scale(k);
+
+        svg.transition().duration(600).call(zoom.transform, target).on('end', () => {
+            // Reset this faculty's diamonds, then enlarge & raise the chosen one.
+            profCircles.filter(p => p.faculty === node.faculty).interrupt()
+                .attr('transform', p => `translate(${profX(p, true)},${profY(p, true)})`)
+                .attr('fill-opacity', 0.95)
+                .attr('stroke', p => p.count > 1 ? '#fff' : 'none')
+                .attr('stroke-width', p => p.count > 1 ? 0.8 : 0)
+                .attr('stroke-opacity', 0.6);
+            profCircles.filter(p => p.id === profId).interrupt().raise()
+                .attr('transform', `translate(${px},${py}) scale(1.7)`)
+                .attr('fill-opacity', 1).attr('stroke', '#fff').attr('stroke-width', 1.5).attr('stroke-opacity', 1);
+            pinTooltip(staffTooltipHTML(node), { clientX: width / 2, clientY: height / 2 });
+        });
+    }
+
+    profCircles.on('mouseover', function(event, d) {
+        if (tooltipPinned || !profVisible(d)) return;
+        tooltip.style.opacity = 1;
+        tooltip.innerHTML = staffTooltipHTML(d);
         tooltip.style.left = (event.clientX + 12) + 'px';
         tooltip.style.top = (event.clientY - 10) + 'px';
-        d3.select(this).attr('r', profRadius(d.count) * 1.6).attr('fill-opacity', 1).attr('stroke', '#fff').attr('stroke-width', 1.5).attr('stroke-opacity', 1);
+        const useSolo = d.faculty === activeFaculty;
+        d3.select(this).attr('transform', `translate(${profX(d, useSolo)},${profY(d, useSolo)}) scale(1.6)`).attr('fill-opacity', 1).attr('stroke', '#fff').attr('stroke-width', 1.5).attr('stroke-opacity', 1);
     }).on('mouseout', function(event, d) {
-        if (tooltipPinned) return;
+        if (tooltipPinned || !profVisible(d)) return;
         tooltip.style.opacity = 0;
         const isActive = d.faculty === activeFaculty;
         d3.select(this)
-            .attr('r', profRadius(d.count))
+            .attr('transform', `translate(${profX(d, isActive)},${profY(d, isActive)})`)
             .attr('fill-opacity', isActive ? 0.95 : 0.7)
             .attr('stroke', d.count > 1 ? '#fff' : 'none')
             .attr('stroke-width', d.count > 1 ? 0.8 : 0)
             .attr('stroke-opacity', isActive ? 0.6 : 0.5);
+    }).on('click', function(event) {
+        // Swallow the click so it doesn't bubble to the background (which clears the selection)
+        event.stopPropagation();
     });
 
     destCircles.on('mouseover', function(event, d) {
         if (tooltipPinned) return;
         tooltip.style.opacity = 1;
-        tooltip.innerHTML = `<strong>${d.name}</strong><br>${d.totalProfs} professor${d.totalProfs>1?'s':''} from ${d.numSources} facult${d.numSources>1?'ies':'y'}`;
+        tooltip.innerHTML = `<strong>${d.name}</strong><br>${d.totalProfs} staff from ${d.numSources} facult${d.numSources>1?'ies':'y'}`;
         tooltip.style.left = (event.clientX + 12) + 'px';
         tooltip.style.top = (event.clientY - 10) + 'px';
     }).on('mouseout', function() {
@@ -1249,7 +1366,7 @@
     facGroups.on('mouseover', function(event, d) {
         if (tooltipPinned) return;
         tooltip.style.opacity = 1;
-        tooltip.innerHTML = `<strong>${d.id}</strong><br>${d.profCount} professors · ${d.count} mobilities`;
+        tooltip.innerHTML = `<strong>${d.id}</strong><br>${d.profCount} staff · ${d.count} mobilities`;
         tooltip.style.left = (event.clientX + 12) + 'px';
         tooltip.style.top = (event.clientY - 10) + 'px';
     }).on('mouseout', function() {
@@ -1292,24 +1409,5 @@
         svg.select('rect').attr('width', w).attr('height', h);
     });
     </script>
-
-    <!-- NAZAD button -->
-    <a href="../index.html" class="nazad-home">NAZAD</a>
-    <style>
-      .nazad-home{
-        position:fixed; left:50%; bottom:22px; transform:translateX(-50%);
-        z-index:2147483000;
-        display:inline-flex; align-items:center; justify-content:center;
-        padding:11px 28px;
-        font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-        font-size:14px; font-weight:600; letter-spacing:0.08em;
-        color:#ffffff; text-decoration:none;
-        background:rgba(17,21,34,0.88); -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);
-        border:1px solid rgba(255,255,255,0.45); border-radius:999px;
-        box-shadow:0 6px 20px rgba(0,0,0,0.35);
-        transition:background .18s ease, transform .18s ease, border-color .18s ease;
-      }
-      .nazad-home:hover{ background:rgba(40,48,78,0.95); border-color:rgba(255,255,255,0.8); transform:translateX(-50%) translateY(-2px); }
-    </style>
 </body>
 </html>

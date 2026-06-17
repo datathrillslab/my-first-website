@@ -1,5 +1,9 @@
 "use strict";
 
+// Na 4K (3840×2160) karta se rasteže preko cijelog ekrana, pa točke i
+// labele skaliramo istim faktorom da ostanu čitljive i razmjerne.
+const UI_SCALE = window.innerWidth >= 2560 ? 1.9 : 1;
+
 const DATA_FILE = "erasmus_staff_mobility_new.csv";
 const WORLD_FILE = "vendor/countries-50m.json";
 const RIJEKA = { lat: 45.3271, lon: 14.4422 };
@@ -7,7 +11,7 @@ const DURATION = 1300;
 const FIT_PAD = 0.1; // udio margine pri cropanju karte na krugove
 const MIN_LON_SPAN = 3; // minimalni geografski raspon da se mapa ne zumira pretjerano
 const MIN_LAT_SPAN = 2;
-const LABEL_MAX_W = 175; // px, širina nakon koje se labela lomi u više redaka
+const LABEL_MAX_W = 175 * UI_SCALE; // px, širina nakon koje se labela lomi u više redaka
 
 const SUBTITLES = {
   overview:
@@ -156,9 +160,9 @@ const originPoint = () => ({
   type: "origin",
   lon: RIJEKA.lon,
   lat: RIJEKA.lat,
-  r: 4,
+  r: 4 * UI_SCALE,
   prio: Infinity,
-  labelLines: [{ text: "Rijeka", size: 12 }],
+  labelLines: [{ text: "Rijeka", size: 12 * UI_SCALE }],
   tip: null,
 });
 
@@ -172,9 +176,9 @@ const overviewPoints = () =>
       lat: f.lat,
       r: facRadius(f.mobilities),
       prio: f.mobilities,
-      labelLines: wrapText(f.name, 12, LABEL_MAX_W).map((t) => ({
+      labelLines: wrapText(f.name, 12 * UI_SCALE, LABEL_MAX_W).map((t) => ({
         text: t,
-        size: 12,
+        size: 12 * UI_SCALE,
       })),
       tip: `<strong>${esc(f.name)}</strong>${f.mobilities} ${plural(
         f.mobilities,
@@ -187,16 +191,16 @@ const overviewPoints = () =>
 const facultyPoints = (f) =>
   f.cities
     .map((c) => {
-      const labelLines = wrapText(c.city, 12, LABEL_MAX_W).map((t) => ({
+      const labelLines = wrapText(c.city, 12 * UI_SCALE, LABEL_MAX_W).map((t) => ({
         text: t,
-        size: 12,
+        size: 12 * UI_SCALE,
       }));
       const subText =
         c.profs.length <= 2
           ? c.profs.map((p) => p.name).join(", ")
           : `${c.profs.length} ${plural(c.profs.length, "djelatnik", "djelatnika")}`;
-      wrapText(subText, 11, 210).forEach((t) =>
-        labelLines.push({ text: t, size: 11, dim: true })
+      wrapText(subText, 11 * UI_SCALE, 210 * UI_SCALE).forEach((t) =>
+        labelLines.push({ text: t, size: 11 * UI_SCALE, dim: true })
       );
 
       const namesHtml = c.profs
@@ -629,15 +633,15 @@ const init = async () => {
   facRadius = d3
     .scaleSqrt()
     .domain([0, d3.max(faculties, (f) => f.mobilities)])
-    .range([0, 38])
+    .range([0, 38 * UI_SCALE])
     .clamp(true);
   const facR = facRadius;
-  facRadius = (n) => Math.max(8, facR(n));
+  facRadius = (n) => Math.max(8 * UI_SCALE, facR(n));
 
   const maxCity = d3.max(faculties, (f) => d3.max(f.cities, (c) => c.mobilities));
-  const cityR = d3.scaleSqrt().domain([0, maxCity]).range([0, 28]).clamp(true);
+  const cityR = d3.scaleSqrt().domain([0, maxCity]).range([0, 28 * UI_SCALE]).clamp(true);
   // Gradovi s jednom mobilnošću (jedan djelatnik, jednom) dobiju najmanji krug.
-  cityRadius = (n) => (n <= 1 ? 3.5 : Math.max(6, cityR(n)));
+  cityRadius = (n) => (n <= 1 ? 3.5 * UI_SCALE : Math.max(6 * UI_SCALE, cityR(n)));
 
   borders = topojson.mesh(world, world.objects.countries);
   gMap.append("path");
