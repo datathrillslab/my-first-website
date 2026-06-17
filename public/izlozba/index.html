@@ -15,21 +15,26 @@
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
+    html, body { height: 100%; }
+
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       background: var(--bg);
       color: var(--text);
-      min-height: 100vh;
+      height: 100vh;
+      height: 100dvh;
+      overflow: hidden;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 64px 24px 80px;
+      justify-content: center;
+      gap: clamp(16px, 4vh, 48px);
+      padding: clamp(16px, 4vh, 56px) 24px;
     }
 
     header {
       text-align: center;
       max-width: 760px;
-      margin-bottom: 48px;
     }
 
     header h1 {
@@ -69,7 +74,7 @@
 
     .thumb {
       width: 100%;
-      aspect-ratio: 1 / 1;
+      height: clamp(110px, 26vh, 480px);
       background: #161c2b;
       overflow: hidden;
     }
@@ -101,26 +106,30 @@
     }
 
     footer {
-      margin-top: 48px;
       color: var(--muted);
       font-size: 13px;
       text-align: center;
     }
 
+    /* Narrow screens — stack the cards and allow scrolling so nothing is clipped */
     @media (max-width: 860px) {
+      body { height: auto; min-height: 100dvh; overflow: auto; justify-content: flex-start; }
       .list { grid-template-columns: 1fr; max-width: 420px; }
+      .thumb { height: clamp(160px, 38vw, 360px); }
     }
 
     /* 4K (3840×2160) — fill the screen and enlarge type so it reads from a distance */
     @media (min-width: 2560px) {
-      body { padding: 140px 48px 160px; }
-      header { max-width: 1600px; margin-bottom: 96px; }
+      body { padding: clamp(40px, 5vh, 120px) 48px; gap: clamp(40px, 5vh, 96px); }
+      header { max-width: 1600px; }
       header h1 { font-size: 88px; }
       header p { margin-top: 32px; font-size: 34px; }
       .list { gap: 48px; max-width: 2400px; }
+      .thumb { height: clamp(480px, 34vh, 760px); }
       .body { gap: 18px; padding: 40px; }
       .body h2 { font-size: 40px; }
       .body p { font-size: 27px; line-height: 1.5; }
+      footer { font-size: 22px; }
     }
   </style>
 </head>

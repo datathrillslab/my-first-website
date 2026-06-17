@@ -245,6 +245,9 @@
             transition: all 0.2s;
         }
         .ctrl-btn:hover { background: rgba(30, 40, 65, 0.9); color: #e0e6ed; border-color: rgba(100, 116, 139, 0.4); }
+        /* Back-to-exhibition button — same control shape, NAZAD colour (matches amra/ena_zita) */
+        a.nazad-btn { display: inline-flex; align-items: center; justify-content: center; text-decoration: none; letter-spacing: 0.08em; background: rgba(17, 21, 34, 0.88); color: #ffffff; border-color: rgba(255, 255, 255, 0.45); }
+        a.nazad-btn:hover { background: rgba(40, 48, 78, 0.95); color: #ffffff; border-color: rgba(255, 255, 255, 0.8); }
 
         /* ── Info Button + Slide-out Drawer ─────────────────────── */
         #info-btn {
@@ -437,6 +440,7 @@
 
     <div id="controls">
         <button class="ctrl-btn" id="btn-reset">Reset View</button>
+        <a class="ctrl-btn nazad-btn" href="../index.html">NAZAD</a>
         <button class="ctrl-btn" id="btn-clear">Clear Selection</button>
     </div>
 
