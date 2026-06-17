@@ -27,12 +27,12 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      gap: clamp(16px, 4vh, 48px);
+      gap: clamp(14px, 3vh, 40px);
       padding: clamp(16px, 4vh, 56px) 24px;
     }
 
     header {
+      flex: 0 0 auto;
       text-align: center;
       max-width: 760px;
     }
@@ -51,8 +51,11 @@
     }
 
     .list {
+      flex: 1 1 auto;
+      min-height: 0;
       display: grid;
       grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: minmax(0, 1fr);
       gap: 24px;
       width: 100%;
       max-width: 1080px;
@@ -61,6 +64,8 @@
     .card {
       display: flex;
       flex-direction: column;
+      min-height: 0;
+      overflow: hidden;
       background: var(--card);
       border: 1px solid rgba(255, 255, 255, 0.12);
       text-decoration: none;
@@ -73,8 +78,9 @@
     }
 
     .thumb {
+      flex: 1 1 auto;
+      min-height: 0;
       width: 100%;
-      height: clamp(110px, 26vh, 480px);
       background: #161c2b;
       overflow: hidden;
     }
@@ -87,11 +93,11 @@
     }
 
     .body {
+      flex: 0 0 auto;
       display: flex;
       flex-direction: column;
-      gap: 10px;
-      padding: 20px;
-      flex: 1;
+      gap: 8px;
+      padding: 18px 20px;
     }
 
     .body h2 {
@@ -102,34 +108,124 @@
     .body p {
       color: var(--muted);
       font-size: 14.5px;
-      line-height: 1.55;
+      line-height: 1.5;
+    }
+
+    .authors {
+      margin-top: 4px;
+      font-size: 13px;
+      color: #9aa6c2;
+      font-style: italic;
     }
 
     footer {
+      flex: 0 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
       color: var(--muted);
       font-size: 13px;
       text-align: center;
     }
 
+    footer .credit p { line-height: 1.5; }
+
+    /* "O projektu" + back buttons — shared pill style */
+    .pill-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: var(--text);
+      background: rgba(17, 21, 34, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.45);
+      border-radius: 999px;
+      padding: 9px 22px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+    }
+    .pill-btn:hover {
+      background: rgba(40, 48, 78, 0.95);
+      border-color: rgba(255, 255, 255, 0.8);
+      transform: translateY(-2px);
+    }
+
+    /* ── "O projektu" overlay ──────────────────────────────────── */
+    .about-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: rgba(10, 14, 24, 0.96);
+      -webkit-backdrop-filter: blur(6px);
+      backdrop-filter: blur(6px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: clamp(16px, 4vh, 48px) 24px;
+    }
+    .about-overlay.open { display: flex; }
+
+    .about-panel {
+      position: relative;
+      width: 100%;
+      max-width: 820px;
+      max-height: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      background: var(--card);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 14px;
+      padding: clamp(24px, 3vw, 44px);
+      overflow: hidden;
+    }
+
+    .about-panel h2 {
+      font-size: clamp(24px, 3.2vw, 34px);
+      font-weight: 700;
+    }
+
+    .about-text {
+      overflow-y: auto;
+      padding-right: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      color: #dde3f0;
+      font-size: clamp(15px, 1.5vw, 17px);
+      line-height: 1.65;
+    }
+    .about-text a { color: #9ec1ff; }
+    .about-text::-webkit-scrollbar { width: 8px; }
+    .about-text::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+
     /* Narrow screens — stack the cards and allow scrolling so nothing is clipped */
     @media (max-width: 860px) {
-      body { height: auto; min-height: 100dvh; overflow: auto; justify-content: flex-start; }
-      .list { grid-template-columns: 1fr; max-width: 420px; }
-      .thumb { height: clamp(160px, 38vw, 360px); }
+      body { height: auto; min-height: 100dvh; overflow: auto; }
+      .list { flex: none; grid-template-columns: 1fr; grid-template-rows: none; max-width: 420px; }
+      .thumb { flex: none; height: clamp(160px, 38vw, 360px); }
     }
 
     /* 4K (3840×2160) — fill the screen and enlarge type so it reads from a distance */
     @media (min-width: 2560px) {
-      body { padding: clamp(40px, 5vh, 120px) 48px; gap: clamp(40px, 5vh, 96px); }
+      body { padding: clamp(40px, 5vh, 120px) 48px; gap: clamp(28px, 4vh, 72px); }
       header { max-width: 1600px; }
       header h1 { font-size: 88px; }
       header p { margin-top: 32px; font-size: 34px; }
       .list { gap: 48px; max-width: 2400px; }
-      .thumb { height: clamp(480px, 34vh, 760px); }
-      .body { gap: 18px; padding: 40px; }
+      .body { gap: 14px; padding: 32px 36px; }
       .body h2 { font-size: 40px; }
-      .body p { font-size: 27px; line-height: 1.5; }
-      footer { font-size: 22px; }
+      .body p { font-size: 27px; line-height: 1.45; }
+      .authors { font-size: 24px; margin-top: 8px; }
+      footer { font-size: 24px; gap: 20px; }
+      .pill-btn { font-size: 26px; padding: 16px 40px; border-radius: 999px; }
+      .about-panel h2 { font-size: 56px; }
+      .about-text { font-size: 30px; gap: 28px; }
     }
   </style>
 </head>
@@ -145,6 +241,7 @@
       <div class="body">
         <h2>Erasmus kompas</h2>
         <p>Interaktivna karta koja smješta Rijeku u središte i prikazuje kamo putuje osoblje pojedinih sastavnica.</p>
+        <p class="authors">Amra Levak, Elena Kiss</p>
       </div>
     </a>
 
@@ -153,6 +250,7 @@
       <div class="body">
         <h2>Cvjetovi mobilnosti</h2>
         <p>Mobilnost osoblja prikazana kao cvjetovi koji rastu kroz godine, gdje svaka latica predstavlja putovanje.</p>
+        <p class="authors">Ena Zita Linić, Katja Grgurić, Lara Miloslavić</p>
       </div>
     </a>
 
@@ -161,10 +259,46 @@
       <div class="body">
         <h2>Mreža mobilnosti</h2>
         <p>Mrežni dijagram koji povezuje fakultete s europskim sveučilištima prema razmjeni nastavnog osoblja.</p>
+        <p class="authors">Sebastijan Žamarija, Ines Brkić</p>
       </div>
     </a>
   </main>
 
-  <footer>Sveučilište u Rijeci — Erasmus+</footer>
+  <footer>
+    <button type="button" class="pill-btn" id="open-about">O projektu</button>
+    <div class="credit">
+      <p>Vizualizacija podataka B</p>
+      <p>mentor: Marko Bralić, naslovni umjetnički suradnik</p>
+    </div>
+  </footer>
+
+  <!-- O projektu — info screen -->
+  <div class="about-overlay" id="about-overlay" role="dialog" aria-modal="true" aria-labelledby="about-title" aria-hidden="true">
+    <div class="about-panel">
+      <button type="button" class="pill-btn" id="close-about" style="align-self:flex-start">← NAZAD</button>
+      <h2 id="about-title">O projektu</h2>
+      <div class="about-text">
+        <p>Rezultati natječaja za mobilnost osoblja Sveučilišta u Rijeci dosad su postojali samo u pedesetak tablica skrivenih unutar PDF dokumenata. Ovo je prvi put da su ti podaci objedinjeni i vizualno prikazani javnosti.</p>
+        <p>Prikaz obuhvaća rezultate natječaja od akademske godine 2020./2021. do 2025./2027., za Erasmus+ mobilnost i mobilnost u treće zemlje, s ukupno 1.214 odobrenih mobilnosti osoblja.</p>
+        <p>U izvornim su dokumentima inozemne ustanove upisivane slobodnim tekstom, pa se ista ustanova često pojavljuje u više različitih oblika: zbog tipfelera i pogrešaka pri upisivanju, naziva na različitim jezicima za istu ustanovu, kratica i nepotpunih naziva. Da bi sva odredišta bila usporediva, ti su oblici ujednačeni i svedeni na matično sveučilište: 700 različitih oblika upisa svedeno je na 365 stvarnih ustanova u 54 zemlje.</p>
+        <p>Razriješene su i nedosljednosti samih dokumenata: ujednačavanje naziva sastavnica UNIRI, zamijenjena polja imena i prezimena, promjene naziva fakulteta tijekom godina, oznake ponovljenih mobilnosti. Zbog složenosti i opsega građe te nedosljednosti izvornih dokumenata, moguće su pojedinačne pogreške.</p>
+        <p>Za dodatne informacije o ovom projektu: <a href="mailto:marko.bralic@apuri.uniri.hr">marko.bralic@apuri.uniri.hr</a></p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var overlay = document.getElementById('about-overlay');
+      var openBtn = document.getElementById('open-about');
+      var closeBtn = document.getElementById('close-about');
+      function open() { overlay.classList.add('open'); overlay.setAttribute('aria-hidden', 'false'); }
+      function close() { overlay.classList.remove('open'); overlay.setAttribute('aria-hidden', 'true'); }
+      openBtn.addEventListener('click', open);
+      closeBtn.addEventListener('click', close);
+      overlay.addEventListener('click', function (e) { if (e.target === overlay) close(); });
+      document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
+    })();
+  </script>
 </body>
 </html>
