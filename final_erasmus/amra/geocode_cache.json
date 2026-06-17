@@ -1,0 +1,1161 @@
+{
+  "Aalborg|Denmark": {
+    "lat": 57.0462626,
+    "lon": 9.9215263,
+    "source": "nominatim"
+  },
+  "Akureyri|Iceland": {
+    "lat": 65.6839036,
+    "lon": -18.1121756,
+    "source": "nominatim"
+  },
+  "Albany|United States": {
+    "lat": 42.6511674,
+    "lon": -73.754968,
+    "source": "nominatim"
+  },
+  "Alicante|Spain": {
+    "lat": 38.3436365,
+    "lon": -0.4881708,
+    "source": "nominatim"
+  },
+  "Almera|Spain": {
+    "lat": 36.8381451,
+    "lon": -2.4596977
+  },
+  "Amiens|France": {
+    "lat": 49.8941708,
+    "lon": 2.2956951,
+    "source": "nominatim"
+  },
+  "Amsterdam|The Netherlands": {
+    "lat": 52.3730796,
+    "lon": 4.8924534,
+    "source": "nominatim"
+  },
+  "Angers|France": {
+    "lat": 47.4739884,
+    "lon": -0.5515588,
+    "source": "nominatim"
+  },
+  "Anse Royale|Seychelles": {
+    "lat": -4.7403833,
+    "lon": 55.5099956,
+    "source": "nominatim"
+  },
+  "Antwerp|Belgium": {
+    "lat": 51.2211097,
+    "lon": 4.3997081,
+    "source": "nominatim"
+  },
+  "Athens|Greece": {
+    "lat": 37.9755648,
+    "lon": 23.7348324,
+    "source": "nominatim"
+  },
+  "Athlone|Ireland": {
+    "lat": 53.4228434,
+    "lon": -7.9425897,
+    "source": "nominatim"
+  },
+  "Aveiro|Portugal": {
+    "lat": 40.640496,
+    "lon": -8.6537841,
+    "source": "nominatim"
+  },
+  "Banja Luka|Bosnia and Herzegovina": {
+    "lat": 44.7720845,
+    "lon": 17.1917651,
+    "source": "nominatim"
+  },
+  "Barcelona|Spain": {
+    "lat": 41.3825802,
+    "lon": 2.177073,
+    "source": "nominatim"
+  },
+  "Bari|Italy": {
+    "lat": 41.1257843,
+    "lon": 16.8620293,
+    "source": "nominatim"
+  },
+  "Belgrade|Serbia": {
+    "lat": 44.8153318,
+    "lon": 20.4456588,
+    "source": "nominatim"
+  },
+  "Bergen|Norway": {
+    "lat": 60.3943055,
+    "lon": 5.3259192,
+    "source": "nominatim"
+  },
+  "Berlin|Germany": {
+    "lat": 52.5173885,
+    "lon": 13.3951309,
+    "source": "nominatim"
+  },
+  "Bielefeld|Germany": {
+    "lat": 52.0191005,
+    "lon": 8.531007,
+    "source": "nominatim"
+  },
+  "Bilbao|Spain": {
+    "lat": 43.2630018,
+    "lon": -2.9350039,
+    "source": "nominatim"
+  },
+  "Bitola|North Macedonia": {
+    "lat": 41.0316005,
+    "lon": 21.3302511,
+    "source": "nominatim"
+  },
+  "Bologna|Italy": {
+    "lat": 44.4938203,
+    "lon": 11.3426327,
+    "source": "nominatim"
+  },
+  "Bolzano|Italy": {
+    "lat": 46.6559455,
+    "lon": 11.2302129,
+    "source": "nominatim"
+  },
+  "Boston|United States": {
+    "lat": 42.3588336,
+    "lon": -71.0578303,
+    "source": "nominatim"
+  },
+  "Braga|Portugal": {
+    "lat": 41.5510583,
+    "lon": -8.4280045,
+    "source": "nominatim"
+  },
+  "Breda|The Netherlands": {
+    "lat": 51.5887845,
+    "lon": 4.7760237,
+    "source": "nominatim"
+  },
+  "Bremen|Germany": {
+    "lat": 53.0758196,
+    "lon": 8.8071646,
+    "source": "nominatim"
+  },
+  "Brno|Czechia": {
+    "lat": 49.1922443,
+    "lon": 16.6113382,
+    "source": "nominatim"
+  },
+  "Brooklyn|United States": {
+    "lat": 40.6526006,
+    "lon": -73.9497211,
+    "source": "nominatim"
+  },
+  "Bruxelles|Belgium": {
+    "lat": 50.8551025,
+    "lon": 4.3510915,
+    "source": "nominatim"
+  },
+  "Budapest|Hungary": {
+    "lat": 47.4978789,
+    "lon": 19.0402383,
+    "source": "nominatim"
+  },
+  "Buenos Aires|Argentina": {
+    "lat": -34.6095579,
+    "lon": -58.3887904,
+    "source": "nominatim"
+  },
+  "Burgas|Bulgaria": {
+    "lat": 42.4936616,
+    "lon": 27.4721276,
+    "source": "nominatim"
+  },
+  "Cagliari|Italy": {
+    "lat": 39.2171994,
+    "lon": 9.113311,
+    "source": "nominatim"
+  },
+  "Camerino|Italy": {
+    "lat": 43.1357641,
+    "lon": 13.0683092,
+    "source": "nominatim"
+  },
+  "Cardiff|United Kingdom": {
+    "lat": 51.4816546,
+    "lon": -3.1791934,
+    "source": "nominatim"
+  },
+  "Castelo Branco|Portugal": {
+    "lat": 39.9767583,
+    "lon": -7.4460599,
+    "source": "nominatim"
+  },
+  "Celje|Slovenia": {
+    "lat": 46.2293889,
+    "lon": 15.2616828,
+    "source": "nominatim"
+  },
+  "Cerdanyola del Valls|Spain": {
+    "lat": 41.4905,
+    "lon": 2.139
+  },
+  "Cergy-Pontoise|France": {
+    "lat": 48.9003625,
+    "lon": 2.0697041,
+    "source": "nominatim"
+  },
+  "Cetinje|": {
+    "lat": 42.389633,
+    "lon": 18.9246085,
+    "source": "nominatim"
+  },
+  "Champs-sur-Marne|France": {
+    "lat": 48.8526892,
+    "lon": 2.6027219,
+    "source": "nominatim"
+  },
+  "Chieti|Italy": {
+    "lat": 42.1026928,
+    "lon": 14.4159053,
+    "source": "nominatim"
+  },
+  "Coimbra|Portugal": {
+    "lat": 40.2111931,
+    "lon": -8.4294632,
+    "source": "nominatim"
+  },
+  "Colchester|United Kingdom": {
+    "lat": 51.8896903,
+    "lon": 0.8994651,
+    "source": "nominatim"
+  },
+  "Coleraine|United Kingdom": {
+    "lat": 55.1315912,
+    "lon": -6.671861,
+    "source": "nominatim"
+  },
+  "Columbia|United States": {
+    "lat": 34.000754,
+    "lon": -81.0352313,
+    "source": "nominatim"
+  },
+  "Copenhagen|Denmark": {
+    "lat": 55.6867243,
+    "lon": 12.5700724,
+    "source": "nominatim"
+  },
+  "Corfu|Greece": {
+    "lat": 39.591337,
+    "lon": 19.8596189,
+    "source": "nominatim"
+  },
+  "Covilha|Portugal": {
+    "lat": 40.2804021,
+    "lon": -7.504191,
+    "source": "nominatim"
+  },
+  "Cz_stochowa|Poland": {
+    "lat": 50.8118195,
+    "lon": 19.1203094
+  },
+  "Dalian|China": {
+    "lat": 38.9130495,
+    "lon": 121.6098013,
+    "source": "nominatim"
+  },
+  "Debrecen|Hungary": {
+    "lat": 47.531399,
+    "lon": 21.6259782,
+    "source": "nominatim"
+  },
+  "Donostia / San Sebastian|Spain": {
+    "lat": 43.3224219,
+    "lon": -1.9838889,
+    "source": "nominatim"
+  },
+  "Dortmund|Germany": {
+    "lat": 51.5142273,
+    "lon": 7.4652789,
+    "source": "nominatim"
+  },
+  "Dublin|Ireland": {
+    "lat": 53.3493795,
+    "lon": -6.2605593,
+    "source": "nominatim"
+  },
+  "Eberswalde|Germany": {
+    "lat": 52.8350807,
+    "lon": 13.7996542,
+    "source": "nominatim"
+  },
+  "Faro|Portugal": {
+    "lat": 37.0162944,
+    "lon": -7.935182,
+    "source": "nominatim"
+  },
+  "Fisciano|Italy": {
+    "lat": 40.772812,
+    "lon": 14.799443,
+    "source": "nominatim"
+  },
+  "Flensburg|Germany": {
+    "lat": 54.7833021,
+    "lon": 9.4333264,
+    "source": "nominatim"
+  },
+  "Foggia|Italy": {
+    "lat": 41.5028106,
+    "lon": 15.4528939,
+    "source": "nominatim"
+  },
+  "Fort Myers|United States": {
+    "lat": 26.640628,
+    "lon": -81.8723084,
+    "source": "nominatim"
+  },
+  "Frankfurt am Main|Germany": {
+    "lat": 50.1106444,
+    "lon": 8.6820917,
+    "source": "nominatim"
+  },
+  "Freiburg im Breisgau|Germany": {
+    "lat": 47.9960901,
+    "lon": 7.8494005,
+    "source": "nominatim"
+  },
+  "Galway|Ireland": {
+    "lat": 53.2744122,
+    "lon": -9.0490601,
+    "source": "nominatim"
+  },
+  "Garching|Germany": {
+    "lat": 48.2513878,
+    "lon": 11.6509662,
+    "source": "nominatim"
+  },
+  "Gdansk|Poland": {
+    "lat": 54.3482907,
+    "lon": 18.6540233,
+    "source": "nominatim"
+  },
+  "Ghent|Belgium": {
+    "lat": 51.0538286,
+    "lon": 3.7250121,
+    "source": "nominatim"
+  },
+  "Giessen|Germany": {
+    "lat": 50.5862066,
+    "lon": 8.6742306,
+    "source": "nominatim"
+  },
+  "Gif-sur-Yvette|France": {
+    "lat": 48.7018823,
+    "lon": 2.134529,
+    "source": "nominatim"
+  },
+  "Girona|Spain": {
+    "lat": 41.9793006,
+    "lon": 2.8199439,
+    "source": "nominatim"
+  },
+  "Gliwice|Poland": {
+    "lat": 50.294113,
+    "lon": 18.6657306,
+    "source": "nominatim"
+  },
+  "Gothenburg|Sweden": {
+    "lat": 57.7072326,
+    "lon": 11.9670171,
+    "source": "nominatim"
+  },
+  "Granada|Spain": {
+    "lat": 37.1734995,
+    "lon": -3.5995337,
+    "source": "nominatim"
+  },
+  "Graz|Austria": {
+    "lat": 47.0708678,
+    "lon": 15.4382786,
+    "source": "nominatim"
+  },
+  "Grenoble|France": {
+    "lat": 45.1875602,
+    "lon": 5.7357819,
+    "source": "nominatim"
+  },
+  "Guayaquil|Ecuador": {
+    "lat": -2.1900572,
+    "lon": -79.8868669,
+    "source": "nominatim"
+  },
+  "Hangzhou|China": {
+    "lat": 30.2489634,
+    "lon": 120.2052342,
+    "source": "nominatim"
+  },
+  "Heerlen|Netherlands": {
+    "lat": 50.8876735,
+    "lon": 5.9773285,
+    "source": "nominatim"
+  },
+  "Heidelberg|Germany": {
+    "lat": 49.4093582,
+    "lon": 8.694724,
+    "source": "nominatim"
+  },
+  "Heilbronn|Germany": {
+    "lat": 49.142291,
+    "lon": 9.218655,
+    "source": "nominatim"
+  },
+  "Heraklion|Greece": {
+    "lat": 35.33908,
+    "lon": 25.1332843,
+    "source": "nominatim"
+  },
+  "Ifrane|Morocco": {
+    "lat": 33.527605,
+    "lon": -5.107408,
+    "source": "nominatim"
+  },
+  "Innsbruck|Austria": {
+    "lat": 47.2654296,
+    "lon": 11.3927685,
+    "source": "nominatim"
+  },
+  "Istanbul|Trkiye": {
+    "lat": 41.0082376,
+    "lon": 28.9783589
+  },
+  "Izmir|Trkiye": {
+    "lat": 38.4189013,
+    "lon": 27.1289559
+  },
+  "Jelgava|Latvia": {
+    "lat": 56.6522063,
+    "lon": 23.7291999,
+    "source": "nominatim"
+  },
+  "Joensuu|Finland": {
+    "lat": 62.6006375,
+    "lon": 29.7619759,
+    "source": "nominatim"
+  },
+  "Jyvskyl|Finland": {
+    "lat": 62.2415445,
+    "lon": 25.7209164
+  },
+  "Jlich|Germany": {
+    "lat": 50.9224,
+    "lon": 6.3616
+  },
+  "Karlsruhe|Germany": {
+    "lat": 49.0068705,
+    "lon": 8.4034195,
+    "source": "nominatim"
+  },
+  "Kathmandu|Nepal": {
+    "lat": 27.708317,
+    "lon": 85.3205817,
+    "source": "nominatim"
+  },
+  "Katowice|Poland": {
+    "lat": 50.2598987,
+    "lon": 19.0215852,
+    "source": "nominatim"
+  },
+  "Kaunas|Lithuania": {
+    "lat": 54.8982139,
+    "lon": 23.9044817,
+    "source": "nominatim"
+  },
+  "Kharkiv|Ukraine": {
+    "lat": 49.9923181,
+    "lon": 36.2310146,
+    "source": "nominatim"
+  },
+  "Klagenfurt|Austria": {
+    "lat": 46.623943,
+    "lon": 14.3075976,
+    "source": "nominatim"
+  },
+  "Klaip_da|Lithuania": {
+    "lat": 55.7032948,
+    "lon": 21.1442795
+  },
+  "Ko_ice|Slovakia": {
+    "lat": 48.7172272,
+    "lon": 21.2496774
+  },
+  "Kobe|Japan": {
+    "lat": 34.6932379,
+    "lon": 135.1943764,
+    "source": "nominatim"
+  },
+  "Konstanz|Germany": {
+    "lat": 47.659216,
+    "lon": 9.1750718,
+    "source": "nominatim"
+  },
+  "Koper|Slovenia": {
+    "lat": 45.5479864,
+    "lon": 13.7304781,
+    "source": "nominatim"
+  },
+  "Krakow|Poland": {
+    "lat": 50.0619474,
+    "lon": 19.9368564,
+    "source": "nominatim"
+  },
+  "Kyiv|Ukraine": {
+    "lat": 50.4500336,
+    "lon": 30.5241361,
+    "source": "nominatim"
+  },
+  "Larnaca|Cyprus": {
+    "lat": 34.9236095,
+    "lon": 33.6236184,
+    "source": "nominatim"
+  },
+  "Las Palmas de Gran Canaria|Spain": {
+    "lat": 28.1288694,
+    "lon": -15.4349015,
+    "source": "nominatim"
+  },
+  "Le Havre|France": {
+    "lat": 49.4938975,
+    "lon": 0.1079732,
+    "source": "nominatim"
+  },
+  "Leeuwarden|The Netherlands": {
+    "lat": 53.2005936,
+    "lon": 5.7918548,
+    "source": "nominatim"
+  },
+  "Leiria|Portugal": {
+    "lat": 39.7437902,
+    "lon": -8.8071119,
+    "source": "nominatim"
+  },
+  "Leszno|Poland": {
+    "lat": 51.8436498,
+    "lon": 16.5744141,
+    "source": "nominatim"
+  },
+  "Leuven|Belgium": {
+    "lat": 50.879202,
+    "lon": 4.7011675,
+    "source": "nominatim"
+  },
+  "Limerick|Ireland": {
+    "lat": 52.661252,
+    "lon": -8.6301239,
+    "source": "nominatim"
+  },
+  "Linz|Austria": {
+    "lat": 48.3059078,
+    "lon": 14.286198,
+    "source": "nominatim"
+  },
+  "Lisbon|Portugal": {
+    "lat": 38.7077507,
+    "lon": -9.1365919,
+    "source": "nominatim"
+  },
+  "Ljubljana|": {
+    "lat": 46.0500268,
+    "lon": 14.5069289,
+    "source": "nominatim"
+  },
+  "Ljubljana|Slovenia": {
+    "lat": 46.0500268,
+    "lon": 14.5069289,
+    "source": "nominatim"
+  },
+  "Long Beach|United States": {
+    "lat": 33.7690164,
+    "lon": -118.191604,
+    "source": "nominatim"
+  },
+  "Lublin|Poland": {
+    "lat": 51.2181945,
+    "lon": 22.5546776,
+    "source": "nominatim"
+  },
+  "Lukavica|Bosnia and Herzegovina": {
+    "lat": 43.8219028,
+    "lon": 18.3682429,
+    "source": "nominatim"
+  },
+  "Lund|Sweden": {
+    "lat": 55.7029296,
+    "lon": 13.1929449,
+    "source": "nominatim"
+  },
+  "Maastricht|The Netherlands": {
+    "lat": 50.8579855,
+    "lon": 5.6969882,
+    "source": "nominatim"
+  },
+  "Madrid|Spain": {
+    "lat": 40.416782,
+    "lon": -3.703507,
+    "source": "nominatim"
+  },
+  "Mainz|Germany": {
+    "lat": 49.9995205,
+    "lon": 8.2736253,
+    "source": "nominatim"
+  },
+  "Malmo|Sweden": {
+    "lat": 55.6052931,
+    "lon": 13.0001566,
+    "source": "nominatim"
+  },
+  "Manila|Philippines": {
+    "lat": 14.5904492,
+    "lon": 120.9803621,
+    "source": "nominatim"
+  },
+  "Maribor|Slovenia": {
+    "lat": 46.5576439,
+    "lon": 15.6455854,
+    "source": "nominatim"
+  },
+  "Marrakesh|Morocco": {
+    "lat": 31.6258257,
+    "lon": -7.9891608,
+    "source": "nominatim"
+  },
+  "Marseille|France": {
+    "lat": 43.2963986,
+    "lon": 5.3777888,
+    "source": "nominatim"
+  },
+  "Melbourne|Australia": {
+    "lat": -37.8142454,
+    "lon": 144.9631732,
+    "source": "nominatim"
+  },
+  "Messina|Italy": {
+    "lat": 38.1937571,
+    "lon": 15.5542082,
+    "source": "nominatim"
+  },
+  "Milan|Italy": {
+    "lat": 45.4641943,
+    "lon": 9.1896346,
+    "source": "nominatim"
+  },
+  "Montevideo|Uruguay": {
+    "lat": -34.9058916,
+    "lon": -56.1913095,
+    "source": "nominatim"
+  },
+  "Mostar|": {
+    "lat": 43.3435855,
+    "lon": 17.8076584,
+    "source": "nominatim"
+  },
+  "Mostar|Bosnia and Herzegovina": {
+    "lat": 43.3435855,
+    "lon": 17.8076584,
+    "source": "nominatim"
+  },
+  "Msida|Malta": {
+    "lat": 35.8956943,
+    "lon": 14.4891829,
+    "source": "nominatim"
+  },
+  "Munich|Germany": {
+    "lat": 48.1371079,
+    "lon": 11.5753822,
+    "source": "nominatim"
+  },
+  "Mlaga|Spain": {
+    "lat": 36.7213028,
+    "lon": -4.4216366
+  },
+  "Nantes|France": {
+    "lat": 47.2186371,
+    "lon": -1.5541362,
+    "source": "nominatim"
+  },
+  "Naples|Italy": {
+    "lat": 40.8358846,
+    "lon": 14.2487679,
+    "source": "nominatim"
+  },
+  "New York|United States": {
+    "lat": 40.7127281,
+    "lon": -74.0060152,
+    "source": "nominatim"
+  },
+  "Ni_|Serbia": {
+    "lat": 43.3211301,
+    "lon": 21.8959232,
+    "source": "nominatim"
+  },
+  "Nice|France": {
+    "lat": 43.7009358,
+    "lon": 7.2683912,
+    "source": "nominatim"
+  },
+  "Nicosia|Cyprus": {
+    "lat": 35.1746503,
+    "lon": 33.3638783,
+    "source": "nominatim"
+  },
+  "Nishinomiya|Japan": {
+    "lat": 34.7377745,
+    "lon": 135.3413128,
+    "source": "nominatim"
+  },
+  "Nova Gorica|Slovenia": {
+    "lat": 45.9581509,
+    "lon": 13.6474998,
+    "source": "nominatim"
+  },
+  "Novi Sad|Serbia": {
+    "lat": 45.2551338,
+    "lon": 19.8451756,
+    "source": "nominatim"
+  },
+  "Novo Mesto|Slovenia": {
+    "lat": 45.8040475,
+    "lon": 15.1696684,
+    "source": "nominatim"
+  },
+  "Oradea|Romania": {
+    "lat": 47.0549163,
+    "lon": 21.9285231,
+    "source": "nominatim"
+  },
+  "Oslo|Norway": {
+    "lat": 59.9133301,
+    "lon": 10.7389701,
+    "source": "nominatim"
+  },
+  "Oviedo|Spain": {
+    "lat": 43.3533452,
+    "lon": -5.8795096,
+    "source": "nominatim"
+  },
+  "Oxford|United Kingdom": {
+    "lat": 51.7520131,
+    "lon": -1.2578499,
+    "source": "nominatim"
+  },
+  "Padua|Italy": {
+    "lat": 45.3984428,
+    "lon": 11.8956829,
+    "source": "nominatim"
+  },
+  "Palermo|Italy": {
+    "lat": 38.1112268,
+    "lon": 13.3524434,
+    "source": "nominatim"
+  },
+  "Palma|Spain": {
+    "lat": 39.5695818,
+    "lon": 2.6500745,
+    "source": "nominatim"
+  },
+  "Paphos|Cyprus": {
+    "lat": 34.7743988,
+    "lon": 32.4231586,
+    "source": "nominatim"
+  },
+  "Paris|France": {
+    "lat": 48.8534951,
+    "lon": 2.3483915,
+    "source": "nominatim"
+  },
+  "Pavia|Italy": {
+    "lat": 45.0368546,
+    "lon": 9.1378251,
+    "source": "nominatim"
+  },
+  "Pao de Arcos|Portugal": {
+    "lat": 38.6906,
+    "lon": -9.2964
+  },
+  "Perugia|Italy": {
+    "lat": 43.1070321,
+    "lon": 12.4029962,
+    "source": "nominatim"
+  },
+  "Podgorica|Montenegro": {
+    "lat": 42.4415238,
+    "lon": 19.2621081,
+    "source": "nominatim"
+  },
+  "Poltava|Ukraine": {
+    "lat": 49.5897423,
+    "lon": 34.5507948,
+    "source": "nominatim"
+  },
+  "Porto|Portugal": {
+    "lat": 41.1502195,
+    "lon": -8.6103497,
+    "source": "nominatim"
+  },
+  "Potsdam|Germany": {
+    "lat": 52.4009309,
+    "lon": 13.0591397,
+    "source": "nominatim"
+  },
+  "Poznan|Poland": {
+    "lat": 52.4082663,
+    "lon": 16.9335199,
+    "source": "nominatim"
+  },
+  "Prague|Czechia": {
+    "lat": 50.0874654,
+    "lon": 14.4212535,
+    "source": "nominatim"
+  },
+  "Pcs|Hungary": {
+    "lat": 46.0727345,
+    "lon": 18.232441
+  },
+  "Rethymno|Greece": {
+    "lat": 35.3676472,
+    "lon": 24.4736079,
+    "source": "nominatim"
+  },
+  "Reykjavik|Iceland": {
+    "lat": 64.145981,
+    "lon": -21.9422367,
+    "source": "nominatim"
+  },
+  "Reykjavk|Iceland": {
+    "lat": 64.145981,
+    "lon": -21.9422367
+  },
+  "Riga|Latvia": {
+    "lat": 56.9493977,
+    "lon": 24.1051846,
+    "source": "nominatim"
+  },
+  "Rijeka|Croatia": {
+    "lat": 45.3267976,
+    "lon": 14.442208,
+    "source": "nominatim"
+  },
+  "Rome|Italy": {
+    "lat": 41.8933203,
+    "lon": 12.4829321,
+    "source": "nominatim"
+  },
+  "Salt|Spain": {
+    "lat": 41.9741672,
+    "lon": 2.7949886,
+    "source": "nominatim"
+  },
+  "Salzburg|Austria": {
+    "lat": 47.7981346,
+    "lon": 13.0464806,
+    "source": "nominatim"
+  },
+  "San Cristbal de La Laguna|Spain": {
+    "lat": 28.4851882,
+    "lon": -16.3163658
+  },
+  "Santa Barbara|United States": {
+    "lat": 34.4221319,
+    "lon": -119.702667,
+    "source": "nominatim"
+  },
+  "Santarm|Portugal": {
+    "lat": 39.2369,
+    "lon": -8.6854
+  },
+  "Sarajevo|Bosnia and Herzegovina": {
+    "lat": 43.8570713,
+    "lon": 18.4126147,
+    "source": "nominatim"
+  },
+  "Sassari|Italy": {
+    "lat": 40.7234746,
+    "lon": 8.5612674,
+    "source": "nominatim"
+  },
+  "Seinjoki|Finland": {
+    "lat": 62.79,
+    "lon": 22.84
+  },
+  "Seoul|South Korea": {
+    "lat": 37.5666791,
+    "lon": 126.9782914,
+    "source": "nominatim"
+  },
+  "Seville|Spain": {
+    "lat": 37.3886303,
+    "lon": -5.9953403,
+    "source": "nominatim"
+  },
+  "Shanghai|China": {
+    "lat": 31.2312707,
+    "lon": 121.4700152,
+    "source": "nominatim"
+  },
+  "Siena|Italy": {
+    "lat": 43.1672059,
+    "lon": 11.467561,
+    "source": "nominatim"
+  },
+  "Singapore|Singapore": {
+    "lat": 1.2899175,
+    "lon": 103.8519072,
+    "source": "nominatim"
+  },
+  "Skopje|North Macedonia": {
+    "lat": 41.9962164,
+    "lon": 21.4318935,
+    "source": "nominatim"
+  },
+  "Slovenj Gradec|Slovenia": {
+    "lat": 46.509144,
+    "lon": 15.0790677,
+    "source": "nominatim"
+  },
+  "Sofia|Bulgaria": {
+    "lat": 42.6977028,
+    "lon": 23.3217359,
+    "source": "nominatim"
+  },
+  "St. Julians|Malta": {
+    "lat": 35.9177707,
+    "lon": 14.4991533,
+    "source": "nominatim"
+  },
+  "St. Plten|Austria": {
+    "lat": 48.204204,
+    "lon": 15.62291
+  },
+  "Stockholm|Sweden": {
+    "lat": 59.3251172,
+    "lon": 18.0710935,
+    "source": "nominatim"
+  },
+  "Subang Jaya|Malaysia": {
+    "lat": 3.051487,
+    "lon": 101.5823339,
+    "source": "nominatim"
+  },
+  "Suceava|Romania": {
+    "lat": 47.5326535,
+    "lon": 25.8345939,
+    "source": "nominatim"
+  },
+  "Svendborg|Denmark": {
+    "lat": 55.0636625,
+    "lon": 10.6084725,
+    "source": "nominatim"
+  },
+  "Tahiche|Spain": {
+    "lat": 29.0113623,
+    "lon": -13.536347,
+    "source": "nominatim"
+  },
+  "Tallinn|Estonia": {
+    "lat": 59.437242,
+    "lon": 24.7572693,
+    "source": "nominatim"
+  },
+  "Tampere|Finland": {
+    "lat": 61.4977929,
+    "lon": 23.7616372,
+    "source": "nominatim"
+  },
+  "Tarragona|Spain": {
+    "lat": 41.1172364,
+    "lon": 1.2546057,
+    "source": "nominatim"
+  },
+  "Tbilisi|Georgia": {
+    "lat": 41.6934591,
+    "lon": 44.8014495,
+    "source": "nominatim"
+  },
+  "Teramo|Italy": {
+    "lat": 42.658118,
+    "lon": 13.6978746,
+    "source": "nominatim"
+  },
+  "Thessaloniki|Greece": {
+    "lat": 40.6403167,
+    "lon": 22.9352716,
+    "source": "nominatim"
+  },
+  "Timi_oara|Romania": {
+    "lat": 45.74947,
+    "lon": 21.227272
+  },
+  "Tirana|Albania": {
+    "lat": 41.3281482,
+    "lon": 19.8184435,
+    "source": "nominatim"
+  },
+  "Toru_|Poland": {
+    "lat": 53.0102178,
+    "lon": 18.60486
+  },
+  "Torun|Poland": {
+    "lat": 53.0102721,
+    "lon": 18.6048094,
+    "source": "nominatim"
+  },
+  "Trento|Italy": {
+    "lat": 46.1029536,
+    "lon": 11.1297425,
+    "source": "nominatim"
+  },
+  "Trieste|Italy": {
+    "lat": 45.6496485,
+    "lon": 13.7772781,
+    "source": "nominatim"
+  },
+  "Udine|Italy": {
+    "lat": 46.0634632,
+    "lon": 13.2358377,
+    "source": "nominatim"
+  },
+  "Uppsala|Sweden": {
+    "lat": 59.8586126,
+    "lon": 17.6387436,
+    "source": "nominatim"
+  },
+  "Urbana|United States": {
+    "lat": 40.1117174,
+    "lon": -88.207301,
+    "source": "nominatim"
+  },
+  "Urbino|Italy": {
+    "lat": 43.7262608,
+    "lon": 12.6363135,
+    "source": "nominatim"
+  },
+  "Valencia|Spain": {
+    "lat": 39.4697065,
+    "lon": -0.3763353,
+    "source": "nominatim"
+  },
+  "Varese|Italy": {
+    "lat": 45.8399103,
+    "lon": 8.754179,
+    "source": "nominatim"
+  },
+  "Varna|Bulgaria": {
+    "lat": 43.2073873,
+    "lon": 27.9166653,
+    "source": "nominatim"
+  },
+  "Vercelli|Italy": {
+    "lat": 45.5553827,
+    "lon": 8.3462837,
+    "source": "nominatim"
+  },
+  "Verona|Italy": {
+    "lat": 45.4424977,
+    "lon": 10.9857377,
+    "source": "nominatim"
+  },
+  "Veszprm|Hungary": {
+    "lat": 47.1028,
+    "lon": 17.9099
+  },
+  "Vienna|Austria": {
+    "lat": 48.2083537,
+    "lon": 16.3725042,
+    "source": "nominatim"
+  },
+  "Vilnius|Lithuania": {
+    "lat": 54.6870458,
+    "lon": 25.2829111,
+    "source": "nominatim"
+  },
+  "Vin_a|Serbia": {
+    "lat": 44.7833,
+    "lon": 20.6
+  },
+  "Warsaw|Poland": {
+    "lat": 52.2319581,
+    "lon": 21.0067249,
+    "source": "nominatim"
+  },
+  "Washington, D.C.|United States": {
+    "lat": 38.8950982,
+    "lon": -77.0363849,
+    "source": "nominatim"
+  },
+  "West Chester|United States": {
+    "lat": 39.9597389,
+    "lon": -75.6044609,
+    "source": "nominatim"
+  },
+  "West Lafayette|United States": {
+    "lat": 40.4258686,
+    "lon": -86.9080655,
+    "source": "nominatim"
+  },
+  "Wiesbaden|Germany": {
+    "lat": 50.0820384,
+    "lon": 8.2416556,
+    "source": "nominatim"
+  },
+  "Woolloongabba|Australia": {
+    "lat": -27.4853896,
+    "lon": 153.0364488,
+    "source": "nominatim"
+  },
+  "Wroclaw|Poland": {
+    "lat": 51.1263106,
+    "lon": 16.9781963,
+    "source": "nominatim"
+  },
+  "York|United Kingdom": {
+    "lat": 53.9656579,
+    "lon": -1.0743052,
+    "source": "nominatim"
+  },
+  "Ypsilanti|United States": {
+    "lat": 42.241051,
+    "lon": -83.6117646,
+    "source": "nominatim"
+  },
+  "Zagreb|Croatia": {
+    "lat": 45.8130967,
+    "lon": 15.9772795,
+    "source": "nominatim"
+  },
+  "Zaragoza|Spain": {
+    "lat": 41.6915847,
+    "lon": -0.9101268,
+    "source": "nominatim"
+  },
+  "Zenica|Bosnia and Herzegovina": {
+    "lat": 44.199828,
+    "lon": 17.9093012,
+    "source": "nominatim"
+  },
+  "Zeytinburnu|Trkiye": {
+    "lat": 41.0045,
+    "lon": 28.8975
+  },
+  "Zln|Czechia": {
+    "lat": 49.2236,
+    "lon": 17.6597
+  },
+  "_zmit|Trkiye": {
+    "lat": 40.7654,
+    "lon": 29.9408
+  },
+  "anakkale|Trkiye": {
+    "lat": 40.1553,
+    "lon": 26.4142
+  },
+  "skdar|Trkiye": {
+    "lat": 41.0234,
+    "lon": 29.0154
+  }
+}

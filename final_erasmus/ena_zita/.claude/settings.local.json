@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -m http.server 8765)",
+      "Bash(npm install *)",
+      "Bash(ls /c/Users/ena/AppData/Local/ms-playwright/ 2>/dev/null | head -10)",
+      "Read(//c/Users/ena/AppData/Local/ms-playwright//**)",
+      "Bash(node screenshot.mjs)",
+      "Bash(python -c ' *)"
+    ]
+  }
+}

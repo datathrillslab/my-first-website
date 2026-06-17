@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Start-Process \"c:\\\\Users\\\\HP\\\\Code\\\\Network Diagram\\\\erasmus.html\")"
+    ]
+  }
+}
